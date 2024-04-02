@@ -1,4 +1,6 @@
 node_modules
+lib
+cache_forge
 mythx.json
 .env
 coverage
@@ -24,3 +26,4 @@ deployments
 broadcast
 out
 docs
+foundry.toml
