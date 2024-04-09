@@ -399,6 +399,8 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param amount0Owed The amount of token0 due to the pool for the minted liquidity
     /// @param amount1Owed The amount of token1 due to the pool for the minted liquidity
     /// @param data Contains the payer address and the pool features required to validate the callback
+
+    //@audit-info Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
     function uniswapV3MintCallback(
         uint256 amount0Owed,
         uint256 amount1Owed,
@@ -432,6 +434,9 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param amount1Delta The amount of token1 that was sent (negative) or must be received (positive) by the pool by
     /// the end of the swap. If positive, the callback must send that amount of token1 to the pool.
     /// @param data Contains the payer address and the pool features required to validate the callback
+
+
+    //@audit-info Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
     function uniswapV3SwapCallback(
         int256 amount0Delta,
         int256 amount1Delta,
