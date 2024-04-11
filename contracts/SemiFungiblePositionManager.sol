@@ -130,6 +130,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     // and vegoid modifies the sensitivity of the streamia to changes in that utilization,
     // much like vega measures the sensitivity of traditional option prices to IV.
     // The effect of vegoid on the long premium multiplier can be explored here: https://www.desmos.com/calculator/mdeqob2m04
+    //note Need to understand it futher
     uint128 private constant VEGOID = 2;
 
     /// @dev Uniswap V3 Factory address. Initialized in the constructor.
@@ -347,6 +348,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param token0 The contract address of token0 of the pool
     /// @param token1 The contract address of token1 of the pool
     /// @param fee The fee level of the of the underlying Uniswap v3 pool, denominated in hundredths of bips
+
     function initializeAMMPool(address token0, address token1, uint24 fee) external {
         // compute the address of the Uniswap v3 pool for the given token0, token1, and fee tier
         address univ3pool = FACTORY.getPool(token0, token1, fee);
@@ -542,6 +544,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param id the ERC1155 token id to transfer
     /// @param amount the amount of tokens to transfer
     /// @param data optional data to include in the receive hook
+    //note is approvals handle correctly ? 
     function safeTransferFrom(
         address from,
         address to,
@@ -758,6 +761,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param univ3pool the uniswap pool in which to swap.
     /// @param itmAmounts how much to swap - how much is ITM
     /// @return totalSwapped the amount swapped in the AMM
+    //note Swap some token in case that the position in mint ITM
     function swapInAMM(
         IUniswapV3Pool univ3pool,
         LeftRightSigned itmAmounts
@@ -960,6 +964,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @return moved the total amount of liquidity moved from the msg.sender to Uniswap
     /// @return itmAmounts the amount of tokens swapped due to legs being in-the-money
     /// @return collectedSingleLeg LeftRight encoded words containing the amount of token0 and token1 collected as fees
+    //note Should be called 4 times , right? 
     function _createLegInAMM(
         IUniswapV3Pool univ3pool,
         TokenId tokenId,
@@ -1187,6 +1192,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param liquidityChunk the chunk of liquidity to mint given by tick upper, tick lower, and its size
     /// @param univ3pool the Uniswap v3 pool to mint liquidity in/to
     /// @return movedAmounts how many tokens were moved from msg.sender to Uniswap
+    //note So user can mint up to 4 chunks of Liquidity then ? 
     function _mintLiquidity(
         LiquidityChunk liquidityChunk,
         IUniswapV3Pool univ3pool
@@ -1323,6 +1329,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param collectedAmounts total amount of tokens (token0 and token1) collected from Uniswap.
     /// @return deltaPremiumOwed The extra premium (per liquidity X64) to be added to the owed accumulator for token0 (right) and token1 (left)
     /// @return deltaPremiumGross The extra premium (per liquidity X64) to be added to the gross accumulator for token0 (right) and token1 (left)
+    //note What are Owed and Gross account liquidities ? 
     function _getPremiaDeltas(
         LeftRightUnsigned currentLiquidity,
         LeftRightUnsigned collectedAmounts

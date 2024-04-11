@@ -218,6 +218,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param token1 token 1 of the Uniswap pool.
     /// @param fee the fee of the Uniswap pool.
     /// @param panopticPool the address of the Panoptic Pool being created and linked to this Collateral Tracker.
+    //note So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ? 
     function startToken(
         bool underlyingIsToken0,
         address token0,
@@ -647,6 +648,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param positionBalance The balance in `account` of the position to be exercised
     /// @param longAmounts The amount of longs in the position.
     /// @return exerciseFees The fees for exercising the option position.
+    //audit-info Crutial method imo
     function exerciseCost(
         int24 currentTick,
         int24 oracleTick,
@@ -891,6 +893,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @dev mints ghost shares so a position can be settled - the total supply is not affected.
     /// @param delegatee The delegatee to send shares to - the recipient of the shares.
     /// @param assets The assets to which the shares delegated correspond.
+    //note What are delegate tokens ? 
     function delegate(address delegatee, uint256 assets) external onlyPanopticPool {
         balanceOf[delegatee] += convertToShares(assets);
     }
@@ -1040,6 +1043,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param swappedAmount The amount of tokens potentially swapped.
     /// @param realizedPremium Premium to settle on the current positions.
     /// @return paidAmount The amount of tokens paid when closing that position.
+    //audit-info Crutial Method imo
     function exercise(
         address optionOwner,
         int128 longAmount,

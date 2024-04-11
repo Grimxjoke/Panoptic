@@ -38,6 +38,7 @@ library SafeTransferLib {
                 // We use 100 because that's the total length of our calldata (4 + 32 * 3)
                 // Counterintuitively, this call() must be positioned after the or() in the
                 // surrounding and() because and() evaluates its arguments from right to left.
+                //audit-info Here's 100 instead of 68 in the Original file. Why ? 
                 call(gas(), token, 0, p, 100, 0, 32)
             )
         }
@@ -52,13 +53,23 @@ library SafeTransferLib {
     function safeTransfer(address token, address to, uint256 amount) internal {
         bool success;
 
+        //audit-info What's that "memory-safe" ? 
         assembly ("memory-safe") {
             // Get free memory pointer - we will store our calldata in scratch space starting at the offset specified here.
             let p := mload(0x40)
 
             // Write the abi-encoded calldata into memory, beginning with the function selector.
+
+            //audit-info Code from the Original vs the modified version
+            // mstore(add(p, 4), and(from, 0xffffffffffffffffffffffffffffffffffffffff)) // Append and mask the "from" argument.
             mstore(p, 0xa9059cbb00000000000000000000000000000000000000000000000000000000)
+
+            //audit-info Code from the Original vs the modified version
+            // mstore(add(p, 36), and(to, 0xffffffffffffffffffffffffffffffffffffffff)) // Append and mask the "to" argument.
             mstore(add(4, p), to) // Append the "to" argument.
+
+            //audit-info Code from the Original vs the modified version
+            // mstore(add(p, 68), amount) // Append the "amount" argument. Masking not required as it's a full 32 byte type.
             mstore(add(36, p), amount) // Append the "amount" argument.
 
             success := and(
@@ -68,6 +79,7 @@ library SafeTransferLib {
                 // We use 68 because that's the total length of our calldata (4 + 32 * 2)
                 // Counterintuitively, this call() must be positioned after the or() in the
                 // surrounding and() because and() evaluates its arguments from right to left.
+                
                 call(gas(), token, 0, p, 68, 0, 32)
             )
         }
