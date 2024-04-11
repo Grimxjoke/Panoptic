@@ -19,6 +19,7 @@ interface IERC20Partial {
     /// @dev While this function is specified to return a boolean value in the EIP, this interface does not expect one
     /// @param spender The address which will spend the funds
     /// @param amount The amount of tokens allowed to be spent
+
     function approve(address spender, uint256 amount) external;
 
     /// @notice Transfers tokens from the caller to another user.

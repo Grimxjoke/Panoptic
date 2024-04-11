@@ -288,6 +288,8 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param token1 Address of the pool's token1.
     /// @param collateralTracker0 Interface for collateral token0.
     /// @param collateralTracker1 Interface for collateral token1.
+
+    //audit Is is possible to DOS many pair by provinding random pool address ? 
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,
