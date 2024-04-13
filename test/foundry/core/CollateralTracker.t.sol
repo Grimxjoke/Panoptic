@@ -712,6 +712,7 @@ contract CollateralTrackerTest is Test, PositionUtils {
         uint256 balanceBefore1 = IERC20Partial(token1).balanceOf(Bob);
 
         // total amount of shares before withdrawal
+        //audit-info calling convertToAsset an assign it to shares ? 
         uint256 sharesBefore0 = convertToAssets(collateralToken0.totalSupply(), collateralToken0);
         uint256 sharesBefore1 = convertToAssets(collateralToken1.totalSupply(), collateralToken1);
 

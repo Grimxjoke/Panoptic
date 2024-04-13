@@ -289,7 +289,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param collateralTracker0 Interface for collateral token0.
     /// @param collateralTracker1 Interface for collateral token1.
 
-    //audit-info Is is possible to DOS many pair by provinding random pool address ? 
+    
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,
@@ -569,7 +569,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param newPositionIdList The new positionIdList without the token being burnt.
     /// @param tickLimitLow Price slippage limit when burning an ITM option.
     /// @param tickLimitHigh Price slippage limit when burning an ITM option.
-    //note can't burn only one leg ? 
+    
     function burnOptions(
         TokenId tokenId,
         TokenId[] calldata newPositionIdList,
@@ -633,7 +633,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         //note @dev Check whether the list of positionId 1) has duplicates and 2) matches the length stored in the positionsHash.
         _validatePositionList(msg.sender, positionIdList, 1);
 
-        //note @notice Disable slippage checks if tickLimitLow == tickLimitHigh and reverses ticks if given in correct order to enable ITM swaps
+        //note Probably the fee generated regarding the slippage
         (tickLimitLow, tickLimitHigh) = _getSlippageLimits(tickLimitLow, tickLimitHigh);
 
         // make sure the tokenId is for this Panoptic pool
@@ -1276,7 +1276,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         // refund the protocol any virtual shares after settling the difference with the exercisor
         s_collateralToken0.refund(account, uint128(delegatedAmounts.rightSlot()));
         s_collateralToken1.refund(account, uint128(delegatedAmounts.leftSlot()));
-
+        
         _validateSolvency(account, positionIdListExercisee, NO_BUFFER);
 
         // the exercisor's position list is validated above
@@ -1598,6 +1598,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param positionIdList Exhaustive list of open positions for the `owners` used for solvency checks where the tokenId to be settled is the last element.
     /// @param owner The owner of the option position to make premium payments on.
     /// @param legIndex the index of the leg in tokenId that is to be collected on (must be isLong=1).
+    //audit-info If someone can help me understand this function. I don't get it. 
     function settleLongPremium(
         TokenId[] calldata positionIdList,
         address owner,

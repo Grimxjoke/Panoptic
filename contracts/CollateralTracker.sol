@@ -401,6 +401,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         // compute the MEV tax, which is equal to a single payment of the commissionRate on the FINAL (post mev-tax) assets paid
         unchecked {
             shares = Math.mulDiv(
+                //audit Weird To subbstact Decimals and Commision fees  
                 assets * (DECIMALS - COMMISSION_FEE),
                 totalSupply,
                 totalAssets() * DECIMALS
@@ -529,6 +530,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param receiver User to receive the assets.
     /// @param owner User to burn the shares from.
     /// @return shares The amount of shares burned to withdraw the desired amount of assets.
+    //audit It seems that the fees generate are not calculated here
     function withdraw(
         uint256 assets,
         address receiver,
@@ -893,7 +895,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @dev mints ghost shares so a position can be settled - the total supply is not affected.
     /// @param delegatee The delegatee to send shares to - the recipient of the shares.
     /// @param assets The assets to which the shares delegated correspond.
-    //note What are delegate tokens ? 
+    //audit-info User get some new Shares 
     function delegate(address delegatee, uint256 assets) external onlyPanopticPool {
         balanceOf[delegatee] += convertToShares(assets);
     }
@@ -903,6 +905,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @dev burns ghost shares after a position has been settled - the total supply is not affected.
     /// @param delegatee The account refunding tokens to 'delegatee'.
     /// @param assets The amount of assets to which the shares to refund to the protocol correspond.
+    //audit-info User loss some Shares 
     function refund(address delegatee, uint256 assets) external onlyPanopticPool {
         balanceOf[delegatee] -= convertToShares(assets);
     }

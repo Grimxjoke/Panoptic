@@ -357,6 +357,9 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
         if (univ3pool == address(0)) revert Errors.UniswapPoolNotInitialized();
 
         // return if the pool has already been initialized in SFPM
+        //audit should it Return or Revert ?
+        //audit It mean to revert in the function desciption ⬆. 
+        //audit But Here it Return.  
         // @dev pools can be initialized from a Panoptic pool or by calling initializeAMMPool directly, reverting
         // would prevent any PanopticPool from being deployed
         // @dev some pools may not be deployable if the poolId has a collision (since we take only 8 bytes)
@@ -402,7 +405,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param amount1Owed The amount of token1 due to the pool for the minted liquidity
     /// @param data Contains the payer address and the pool features required to validate the callback
 
-    //audit-info Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
+    //audit Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
     function uniswapV3MintCallback(
         uint256 amount0Owed,
         uint256 amount1Owed,
@@ -508,6 +511,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param slippageTickLimitHigh The higher slippage limit when minting an ITM position (set to lower than slippageTickLimitLow for swapping when minting)
     /// @return collectedByLeg An array of LeftRight encoded words containing the amount of token0 and token1 collected as fees for each leg
     /// @return totalSwapped A LeftRight encoded word containing the total amount of token0 and token1 swapped if minting ITM
+    //audit-info Create a Position, Called by Panoptic pool
     function mintTokenizedPosition(
         TokenId tokenId,
         uint128 positionSize,
@@ -965,6 +969,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @return itmAmounts the amount of tokens swapped due to legs being in-the-money
     /// @return collectedSingleLeg LeftRight encoded words containing the amount of token0 and token1 collected as fees
     //note Should be called 4 times , right? 
+    //audit-ok Yes, going throught a for loop in "_createPositionInAMM"
     function _createLegInAMM(
         IUniswapV3Pool univ3pool,
         TokenId tokenId,
