@@ -8,10 +8,11 @@ library Constants {
     /// @notice Fixed point multiplier: 2**96
     uint256 internal constant FP96 = 0x1000000000000000000000000;
 
-    //audit-info Need Checks on those Magic Numbers
+    //audit-ok 
     /// @notice Minimum possible price tick in a Uniswap V3 pool
     int24 internal constant MIN_V3POOL_TICK = -887272;
-
+    
+    //audit-ok
     /// @notice Maximum possible price tick in a Uniswap V3 pool
     int24 internal constant MAX_V3POOL_TICK = 887272;
 

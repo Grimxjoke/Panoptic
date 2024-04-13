@@ -629,8 +629,11 @@ contract PanopticPool is ERC1155Holder, Multicall {
         }
 
         // do duplicate checks and the checks related to minting and positions
+        //note @notice Makes sure that the positions in the incoming user's list match the existing active option positions.
+        //note @dev Check whether the list of positionId 1) has duplicates and 2) matches the length stored in the positionsHash.
         _validatePositionList(msg.sender, positionIdList, 1);
 
+        //note @notice Disable slippage checks if tickLimitLow == tickLimitHigh and reverses ticks if given in correct order to enable ITM swaps
         (tickLimitLow, tickLimitHigh) = _getSlippageLimits(tickLimitLow, tickLimitHigh);
 
         // make sure the tokenId is for this Panoptic pool
