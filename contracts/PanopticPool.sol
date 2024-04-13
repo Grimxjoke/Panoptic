@@ -289,7 +289,6 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param collateralTracker0 Interface for collateral token0.
     /// @param collateralTracker1 Interface for collateral token1.
 
-    
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,

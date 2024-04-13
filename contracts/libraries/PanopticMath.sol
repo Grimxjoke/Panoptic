@@ -60,6 +60,7 @@ library PanopticMath {
     /// @param poolId The 64-bit pool ID
     /// @return The provided `poolId` with its pool pattern slot incremented by 1
     //note why incrementing it with 1, what is the use case of this
+    //note What the Pool Patern ?
     function incrementPoolPattern(uint64 poolId) internal pure returns (uint64) {
         unchecked {
             // increment
@@ -76,6 +77,7 @@ library PanopticMath {
     ///
     /// @param addr The address to get the number of leading zero hex characters for
     /// @return The number of leading zero hex characters in the address
+    //note What do we care ?
     function numberOfLeadingHexZeros(address addr) external pure returns (uint256) {
         unchecked {
             return addr == address(0) ? 40 : 39 - Math.mostSignificantNibble(uint160(addr));
@@ -94,6 +96,7 @@ library PanopticMath {
     /// @param tokenId The new position to add to the existing hash: existingHash = uint248(existingHash) ^ hashOf(tokenId)
     /// @param addFlag Whether to mint (add) the tokenId to the count of positions or burn (subtract) it from the count (existingHash >> 248) +/- 1
     /// @return newHash The new positionHash with the updated hash
+    //note Updating the TokenId then, When a new leg is add ? Or in a Roll event ?
     function updatePositionsHash(
         uint256 existingHash,
         TokenId tokenId,
@@ -127,6 +130,7 @@ library PanopticMath {
     /// @param cardinality The number of `periods` to in the median price array, should be odd.
     /// @param period The number of observations to average to compute one entry in the median price array
     /// @return The median of `cardinality` observations spaced by `period` in the Uniswap pool
+    //note  What's that ?
     //note calculates a manipulation-resistant Time-Weighted Average Price (TWAP) for a Uniswap v3 pool
     function computeMedianObservedPrice(
         IUniswapV3Pool univ3pool,
@@ -494,6 +498,7 @@ library PanopticMath {
     /// @param amount The amount of token0 to convert into token1
     /// @param sqrtPriceX96 The square root of the price at which to convert `amount` of token0 into token1
     /// @return The converted `amount` of token0 represented in terms of token1
+    //audit-info Could it be vulnerable to Market Manipulation ?
     function convert0to1(uint256 amount, uint160 sqrtPriceX96) internal pure returns (uint256) {
         unchecked {
             // the tick 443636 is the maximum price where (price) * 2**192 fits into a uint256 (< 2**256-1)
@@ -528,6 +533,7 @@ library PanopticMath {
     /// @param amount The amount of token0 to convert into token1
     /// @param sqrtPriceX96 The square root of the price at which to convert `amount` of token0 into token1
     /// @return The converted `amount` of token0 represented in terms of token1
+    //note Why using int256 ?
     function convert0to1(int256 amount, uint160 sqrtPriceX96) internal pure returns (int256) {
         unchecked {
             // the tick 443636 is the maximum price where (price) * 2**192 fits into a uint256 (< 2**256-1)
@@ -655,6 +661,7 @@ library PanopticMath {
     /// @return bonus0 Bonus amount for token0
     /// @return bonus1 Bonus amount for token1
     /// @return The LeftRight-packed protocol loss for both tokens, i.e., the delta between the user's balance and expended tokens
+    //audit-info Crutial method imo
     function getLiquidationBonus(
         LeftRightUnsigned tokenData0,
         LeftRightUnsigned tokenData1,
@@ -772,6 +779,8 @@ library PanopticMath {
     /// @param settledTokens The per-chunk accumulator of settled tokens in storage from which to subtract the haircut premium
     /// @return The delta in bonus0 for the liquidator post-haircut
     /// @return The delta in bonus1 for the liquidator post-haircut
+    //note A "haircut" typically refers to a reduction in the valuation or amount of an asset
+    //note A "clawback" is the act of reclaiming funds that have been disbursed, often as a result of contractual terms being triggered by specific events.
     function haircutPremia(
         address liquidatee,
         TokenId[] memory positionIdList,
