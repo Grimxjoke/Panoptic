@@ -15,6 +15,9 @@ import {TokenId} from "@types/TokenId.sol";
 
 /// @title Compute general math quantities relevant to Panoptic and AMM pool management.
 /// @author Axicon Labs Limited
+/* //audit-info some major changes from previous c4-audit and this one is mentioned below
+*  Probably need to look into every thing because the previous implementation contains only 200 line and this file contains over 900 lines
+*/
 library PanopticMath {
     // Used for safecasting
     using Math for uint256;
@@ -56,6 +59,7 @@ library PanopticMath {
     /// @notice Increments the pool pattern (first 48 bits) of a poolId by 1.
     /// @param poolId The 64-bit pool ID
     /// @return The provided `poolId` with its pool pattern slot incremented by 1
+    //note why incrementing it with 1, what is the use case of this
     function incrementPoolPattern(uint64 poolId) internal pure returns (uint64) {
         unchecked {
             // increment
@@ -81,6 +85,7 @@ library PanopticMath {
     /*//////////////////////////////////////////////////////////////
                           ORACLE CALCULATIONS
     //////////////////////////////////////////////////////////////*/
+    //todo come into this section after uniswapv3book
 
     /// @notice Update an existing account's "positions hash" with a new single position `tokenId`.
     /// @notice The positions hash contains a single fingerprint of all positions created by an account/user as well as a tally of the positions.
@@ -122,6 +127,7 @@ library PanopticMath {
     /// @param cardinality The number of `periods` to in the median price array, should be odd.
     /// @param period The number of observations to average to compute one entry in the median price array
     /// @return The median of `cardinality` observations spaced by `period` in the Uniswap pool
+    //note calculates a manipulation-resistant Time-Weighted Average Price (TWAP) for a Uniswap v3 pool
     function computeMedianObservedPrice(
         IUniswapV3Pool univ3pool,
         uint256 observationIndex,
@@ -165,6 +171,7 @@ library PanopticMath {
     /// @param univ3pool The Uniswap pool to retrieve observations from
     /// @return medianTick The median of the provided 7-slot ring buffer of ticks in `medianData`
     /// @return updatedMedianData The updated 7-slot ring buffer of ticks with the latest observation inserted if the last entry is at least `period` seconds old (returns 0 otherwise)
+    //note manages a specialized data structure called a "sorted 7-slot ring buffer" to efficiently track and calculate the median tick value in a Uniswap v3 pool.
     function computeInternalMedian(
         uint256 observationIndex,
         uint256 observationCardinality,

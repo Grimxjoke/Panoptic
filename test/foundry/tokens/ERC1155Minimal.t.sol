@@ -34,6 +34,8 @@ contract ERC1155Minimal is Test {
         return y;
     }
 
+    //e It creates copies of fixed-size arrays in memory, which Solidity treats differently than fixed-size arrays in storage.
+    //e These memory-based arrays, while still technically fixed-size, are compatible with functions that expect dynamic arrays as arguments.
     function fixedToDynamic(address[10] memory x) internal pure returns (address[] memory) {
         address[] memory y = new address[](10);
         for (uint256 i = 0; i < 10; i++) {

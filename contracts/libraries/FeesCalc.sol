@@ -36,6 +36,10 @@ import {TokenId} from "@types/TokenId.sol";
 //            Current price tick
 //              of the AMM
 //
+/* //audit-info some major changes from previous c4-audit and this one is mentioned below
+* 1. getPortfolioFalue() was not implemented prefiously.
+* so we can find something in these
+*/
 library FeesCalc {
     /// @notice Calculate NAV of user's option portfolio at a given tick.
     /// @param atTick The tick to calculate the value at
@@ -127,6 +131,7 @@ library FeesCalc {
     /// @param tickUpper The upper tick of the option position leg (a liquidity chunk)
     /// @return feeGrowthInside0X128 the fee growth in the AMM of token0
     /// @return feeGrowthInside1X128 the fee growth in the AMM of token1
+    //todo look into this function after going through the uniswapv3book
     function _getAMMSwapFeesPerLiquidityCollected(
         IUniswapV3Pool univ3pool,
         int24 currentTick,

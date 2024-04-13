@@ -15,6 +15,7 @@ library Constants {
     int24 internal constant MAX_V3POOL_TICK = 887272;
 
     /// @notice Minimum possible sqrtPriceX96 in a Uniswap V3 pool
+    //audit-info didn't get what this represent yet
     uint160 internal constant MIN_V3POOL_SQRT_RATIO = 4295128739;
 
     /// @notice Maximum possible sqrtPriceX96 in a Uniswap V3 pool

@@ -10,6 +10,7 @@ interface IDonorNFT {
     /// @param token0 Token0 of the Uniswap pool `newPoolContract` was deployed on
     /// @param token1 Token1 of the Uniswap pool `newPoolContract` was deployed on
     /// @param fee The fee tier, in hundredths of bips, of the Uniswap pool `newPoolContract` was deployed on
+    //audit-info what is this bips
     function issueNFT(
         address deployer,
         PanopticPool newPoolContract,

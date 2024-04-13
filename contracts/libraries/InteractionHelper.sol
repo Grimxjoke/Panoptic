@@ -14,6 +14,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 /// @dev Generally employed when there is a need to save or reuse bytecode size
 // on a core contract (calls take a significant amount of logic).
 /// @author Axicon Labs Limited
+//audit-info this library was not in previous c4-audit
 library InteractionHelper {
     /// @notice Function that performs approvals on behalf of the PanopticPool for CollateralTracker and SemiFungiblePositionManager.
     /// @param sfpm The SemiFungiblePositionManager being approved for both token0 and token1
@@ -104,6 +105,7 @@ library InteractionHelper {
     /// @notice Returns decimals of underlying token (0 if not present).
     /// @param token The address of the underlying token used to compute the decimals
     /// @return The decimals of the token
+    //audit-info wouldn't it create problems if the call fail and return 0
     function computeDecimals(address token) external view returns (uint8) {
         // not guaranteed that token supports metadada extension
         // so we need to let call fail and return placeholder if not

@@ -8,6 +8,8 @@ import {Errors} from "@libraries/Errors.sol";
 /// @author Axicon Labs Limited
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/utils/SafeTransferLib.sol)
 /// @dev Caution! This library won't check that a token has code, responsibility is delegated to the caller.
+//audit-info check the modified parts from solmate
+//todo check the test files
 library SafeTransferLib {
     /*//////////////////////////////////////////////////////////////
                             ERC20 OPERATIONS

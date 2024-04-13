@@ -23,6 +23,7 @@ import {TokenId} from "@types/TokenId.sol";
 //
 /// @notice Tracks collateral of users which is key to ensure the correct level of collateralization is achieved.
 /// This is represented as an ERC20 share token. A Panoptic pool has 2 tokens, each issued by its own instance of a CollateralTracker.
+//note 2 tokens? is it talking about token0 and token1 of pool.
 /// All math within this contract pertains to a single token.
 //
 /// @notice This contract uses the ERC4626 standard allowing the minting and burning of "shares" (represented using ERC20 inheritance) in exchange for underlying "assets".
@@ -109,6 +110,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     PanopticPool internal s_panopticPool;
 
     /// @dev Cached amount of assets accounted to be held by the Panoptic Pool — ignores donations, pending fee payouts, and other untracked balance changes.
+    //todo check the donation funcitonality
     uint128 internal s_poolAssets;
 
     /// @dev Amount of assets moved from the Panoptic Pool to the AMM.
@@ -118,6 +120,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// defined in basis points as a multiple of the pool fee / 10_000.
     /// @dev The result of the calculation is stored instead of the multiple to save gas during usage.
     /// When the fee is set, the multiple is calculated and stored
+    //todo cross-reference it with docs to understand this
     uint128 internal s_ITMSpreadFee;
 
     /// @dev The fee of the Uniswap pool.
@@ -175,6 +178,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
                   INITIALIZATION & PARAMETER SETTINGS
     //////////////////////////////////////////////////////////////*/
 
+    //note this constructor sets Risk parameter only
     constructor(
         uint256 _commissionFee,
         uint256 _sellerCollateralRatio,
@@ -272,6 +276,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @return poolAssets cached amount of assets accounted to be held by the Panoptic Pool - ignores donations, pending fee payouts, and other untracked balance changes.
     /// @return insideAMM the underlying token amount held in the AMM.
     /// @return currentPoolUtilization Packing of the pool utilization (how much funds are in the Panoptic pool versus the AMM pool at the time of minting),
+    //todo read more on pool utilization
     /// right 64bits for token0 and left 64bits for token1, defined as (inAMM * 10_000) / totalAssets().
     /// Where totalAssets is the total tracked assets in the AMM and PanopticPool minus fees and donations to the Panoptic pool.
     function getPoolData()
@@ -356,6 +361,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
                      STANDARD ERC4626 INTERFACE
     //////////////////////////////////////////////////////////////*/
 
+    //todo comeback to this part after some ERC4626 security or implementation knowledge
     /// @notice Get the token contract address of the underlying asset being managed.
     /// @return assetTokenAddress The address of the underlying asset.
     function asset() external view returns (address assetTokenAddress) {
@@ -398,6 +404,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @return shares The amount of shares that can be minted.
     function previewDeposit(uint256 assets) public view returns (uint256 shares) {
         // compute the MEV tax, which is equal to a single payment of the commissionRate on the FINAL (post mev-tax) assets paid
+        //note why this comment is introducing MEV tax in this funciton
         unchecked {
             shares = Math.mulDiv(
                 assets * (DECIMALS - COMMISSION_FEE),
