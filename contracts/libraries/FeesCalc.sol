@@ -41,7 +41,8 @@ import {TokenId} from "@types/TokenId.sol";
 * so we can find something in these
 */
 library FeesCalc {
-    /// @notice Calculate NAV of user's option portfolio at a given tick.
+    //audit-info NAV == Net Asset Value
+    /// @notice Calculate NAV of user's option portfolio at a given tick. 
     /// @param atTick The tick to calculate the value at
     /// @param userBalance The position balance array for the user (left=tokenId, right=positionSize)
     /// @param positionIdList A list of all positions the user holds on that pool

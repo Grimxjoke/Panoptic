@@ -27,8 +27,12 @@ using TokenIdLibrary for TokenId global;
 // (2) asset             1bit      0bits      : Specifies the asset (0: token0, 1: token1)
 // (3) optionRatio       7bits     1bits      : number of contracts per leg
 // (4) isLong            1bit      8bits      : long==1 means liquidity is removed, long==0 -> liquidity is added
+
+//audit-info How you know if it's put/call based on the token sent when deployed ?  
 // (5) tokenType         1bit      9bits      : put/call: which token is moved when deployed (0 -> token0, 1 -> token1)
 // (6) riskPartner       2bits     10bits     : normally its own index. Partner in defined risk position otherwise
+
+//audit-info Isn't it too low ? uint24 Max Value is 16_777_216
 // (7) strike           24bits     12bits     : strike price; defined as (tickUpper + tickLower) / 2
 // (8) width            12bits     36bits     : width; defined as (tickUpper - tickLower) / tickSpacing
 // Total                48bits                : Each leg takes up this many bits

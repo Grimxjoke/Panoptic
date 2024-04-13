@@ -91,6 +91,7 @@ library Math {
         }
     }
 
+    //audit-info What's a Nibble ? 
     /// @notice Returns the index of the most significant nibble of the 160-bit number,
     /// where the least significant nibble is at index 0 and the most significant nibble is at index 40.
     /// @param x The value for which to compute the most significant nibble
@@ -754,6 +755,7 @@ library Math {
                                 SORTING
     //////////////////////////////////////////////////////////////*/
 
+    //audit-info Looks like very inefficient
     /// @notice QuickSort is a sorting algorithm that employs the Divide and Conquer strategy. It selects a pivot element and arranges the given array around
     /// this pivot by correctly positioning it within the sorted array.
     /// @param arr The elements that must be sorted

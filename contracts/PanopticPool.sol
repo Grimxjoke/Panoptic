@@ -288,6 +288,8 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param token1 Address of the pool's token1.
     /// @param collateralTracker0 Interface for collateral token0.
     /// @param collateralTracker1 Interface for collateral token1.
+
+    
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,
@@ -426,6 +428,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param includePendingPremium true = include premium that is owed to the user but has not yet settled, false = only include premium that is available to collect.
     /// @return portfolioPremium The computed premia of the user's positions, where premia contains the accumulated premia for token0 in the right slot and for token1 in the left slot.
     /// @return balances A list of balances and pool utilization for each position, of the form [[tokenId0, balances0], [tokenId1, balances1], ...].
+    //note I Thought this was done in CollateralTracker
     function _calculateAccumulatedPremia(
         address user,
         TokenId[] calldata positionIdList,
@@ -566,6 +569,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param newPositionIdList The new positionIdList without the token being burnt.
     /// @param tickLimitLow Price slippage limit when burning an ITM option.
     /// @param tickLimitHigh Price slippage limit when burning an ITM option.
+    
     function burnOptions(
         TokenId tokenId,
         TokenId[] calldata newPositionIdList,
@@ -625,8 +629,11 @@ contract PanopticPool is ERC1155Holder, Multicall {
         }
 
         // do duplicate checks and the checks related to minting and positions
+        //note @notice Makes sure that the positions in the incoming user's list match the existing active option positions.
+        //note @dev Check whether the list of positionId 1) has duplicates and 2) matches the length stored in the positionsHash.
         _validatePositionList(msg.sender, positionIdList, 1);
 
+        //note Probably the fee generated regarding the slippage
         (tickLimitLow, tickLimitHigh) = _getSlippageLimits(tickLimitLow, tickLimitHigh);
 
         // make sure the tokenId is for this Panoptic pool
@@ -674,6 +681,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param tickLimitHigh The upper slippage limit on the tick.
     /// @return poolUtilizations Packing of the pool utilization (how much funds are in the Panoptic pool versus the AMM pool) at the time of minting,
     /// right 64bits for token0 and left 64bits for token1.
+    //note probably gonna check on Collteral Trackers methods
     function _mintInSFPMAndUpdateCollateral(
         TokenId tokenId,
         uint128 positionSize,
@@ -703,6 +711,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @return poolUtilizations Packing of the pool utilization (how much funds are in the Panoptic pool versus the AMM pool at the time of minting),
     /// right 64bits for token0 and left 64bits for token1, defined as (inAMM * 10_000) / totalAssets().
     /// Where totalAssets is the total tracked assets in the AMM and PanopticPool minus fees and donations to the Panoptic pool.
+    //audit-info Crutial Method imo
     function _payCommissionAndWriteData(
         TokenId tokenId,
         uint128 positionSize,
@@ -884,6 +893,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param positionIdList The new positionIdList without the token(s) being burnt.
     /// @param buffer The buffer to apply to the collateral requirement for `user`
     /// @return medianData If nonzero (enough time has passed since last observation), the updated value for `s_miniMedian` with a new observation
+    //audit-info User Should be able to get liquidate even if already insolvent
     function _validateSolvency(
         address user,
         TokenId[] calldata positionIdList,
@@ -1014,6 +1024,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param liquidatee Address of the distressed account.
     /// @param delegations LeftRight amounts of token0 and token1 (token0:token1 right:left) delegated to the liquidatee by the liquidator so the option can be smoothly exercised.
     /// @param positionIdList List of positions owned by the user. Written as [tokenId1, tokenId2, ...].
+    //audit-info Crutial Method imo
     function liquidate(
         TokenId[] calldata positionIdListLiquidator,
         address liquidatee,
@@ -1176,6 +1187,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param touchedId List of position to be force exercised. Can only contain one tokenId, written as [tokenId]
     /// @param positionIdListExercisee Post-burn list of open positions in the exercisee's (account) account
     /// @param positionIdListExercisor List of open positions in the exercisor's (msg.sender) account
+    //audit-info Crutial Method imo
     function forceExercise(
         address account,
         TokenId[] calldata touchedId,
@@ -1264,7 +1276,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         // refund the protocol any virtual shares after settling the difference with the exercisor
         s_collateralToken0.refund(account, uint128(delegatedAmounts.rightSlot()));
         s_collateralToken1.refund(account, uint128(delegatedAmounts.leftSlot()));
-
+        
         _validateSolvency(account, positionIdListExercisee, NO_BUFFER);
 
         // the exercisor's position list is validated above
@@ -1287,6 +1299,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param currentTick The current tick of the Uniswap pool (needed for fee calculations).
     /// @param atTick The tick to check solvency at.
     /// @param buffer The buffer to apply to the collateral requirement.
+    //note what does it mean to be solvent at a tick only ? Isn't it a comparation between the collteral and the margins ? 
     function _checkSolvencyAtTick(
         address account,
         TokenId[] calldata positionIdList,
@@ -1462,6 +1475,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param tickUpper The upper tick of the chunk.
     /// @param effectiveLiquidityLimitX32 Maximum amount of "spread" defined as totalLiquidity/netLiquidity for a new position
     /// denominated as X32 = (ratioLimit * 2**32). Set to 0 for no limit / only short options.
+    //note What is the set Threshold ? 
     function _checkLiquiditySpread(
         TokenId tokenId,
         uint256 leg,
@@ -1584,6 +1598,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param positionIdList Exhaustive list of open positions for the `owners` used for solvency checks where the tokenId to be settled is the last element.
     /// @param owner The owner of the option position to make premium payments on.
     /// @param legIndex the index of the leg in tokenId that is to be collected on (must be isLong=1).
+    //audit-info If someone can help me understand this function. I don't get it. 
     function settleLongPremium(
         TokenId[] calldata positionIdList,
         address owner,

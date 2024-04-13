@@ -22,11 +22,13 @@ interface IERC20Partial {
     /// @param spender The address which will spend the funds
     /// @param amount The amount of tokens allowed to be spent
     //audit-info generally in ERC20Partial doesn't implement approve but this contract implemented it so check it if there will be problem or not
+    //audit-info Missing the return value "success" from the ERC-20 Standard
     function approve(address spender, uint256 amount) external;
 
     /// @notice Transfers tokens from the caller to another user.
     /// @param to The user to transfer tokens to
     /// @param amount The amount of tokens to transfer
+        //audit-info Missing the return value "success" from the ERC-20 Standard
     function transfer(address to, uint256 amount) external;
 }
 //todo look at this later especially the approve function and non-returnable function
