@@ -131,7 +131,7 @@ contract PanopticFactory is Multicall {
 
     /// @notice Initialize state.
     /// @param _owner The first owner of `PanopticFactory`
-    //audit-issue front running, should be initialized in constructor
+    //audit front running, should be initialized in constructor
     function initialize(address _owner) public {
         if (!s_initialized) {
             s_owner = _owner;
