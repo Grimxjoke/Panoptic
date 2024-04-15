@@ -1,0 +1,604 @@
+digraph G {
+  graph [ ratio = "auto", page = "100", compound =true ];
+subgraph "clusterPanopticPool" {
+  graph [ label = "PanopticPool", color = "lightgray", style = "filled", bgcolor = "lightgray" ];
+  "PanopticPool.<Constructor>" [ label = "<Constructor>", color = "green" ];
+  "PanopticPool.startPool" [ label = "startPool", color = "blue" ];
+  "PanopticPool.assertPriceWithinBounds" [ label = "assertPriceWithinBounds", color = "blue" ];
+  "PanopticPool.optionPositionBalance" [ label = "optionPositionBalance", color = "blue" ];
+  "PanopticPool.calculateAccumulatedFeesBatch" [ label = "calculateAccumulatedFeesBatch", color = "blue" ];
+  "PanopticPool.calculatePortfolioValue" [ label = "calculatePortfolioValue", color = "blue" ];
+  "PanopticPool._calculateAccumulatedPremia" [ label = "_calculateAccumulatedPremia" ];
+  "PanopticPool._getSlippageLimits" [ label = "_getSlippageLimits" ];
+  "PanopticPool.pokeMedian" [ label = "pokeMedian", color = "blue" ];
+  "PanopticPool.mintOptions" [ label = "mintOptions", color = "blue" ];
+  "PanopticPool.burnOptions" [ label = "burnOptions", color = "blue" ];
+  "PanopticPool._mintOptions" [ label = "_mintOptions" ];
+  "PanopticPool._mintInSFPMAndUpdateCollateral" [ label = "_mintInSFPMAndUpdateCollateral" ];
+  "PanopticPool._payCommissionAndWriteData" [ label = "_payCommissionAndWriteData" ];
+  "PanopticPool._addUserOption" [ label = "_addUserOption" ];
+  "PanopticPool._burnAllOptionsFrom" [ label = "_burnAllOptionsFrom" ];
+  "PanopticPool._burnOptions" [ label = "_burnOptions" ];
+  "PanopticPool._updatePositionDataBurn" [ label = "_updatePositionDataBurn" ];
+  "PanopticPool._validateSolvency" [ label = "_validateSolvency" ];
+  "PanopticPool._burnAndHandleExercise" [ label = "_burnAndHandleExercise" ];
+  "PanopticPool.liquidate" [ label = "liquidate", color = "blue" ];
+  "PanopticPool.forceExercise" [ label = "forceExercise", color = "blue" ];
+  "PanopticPool._checkSolvencyAtTick" [ label = "_checkSolvencyAtTick" ];
+  "PanopticPool._getSolvencyBalances" [ label = "_getSolvencyBalances" ];
+  "PanopticPool._validatePositionList" [ label = "_validatePositionList" ];
+  "PanopticPool._updatePositionsHash" [ label = "_updatePositionsHash" ];
+  "PanopticPool.univ3pool" [ label = "univ3pool", color = "blue" ];
+  "PanopticPool.collateralToken0" [ label = "collateralToken0", color = "blue" ];
+  "PanopticPool.collateralToken1" [ label = "collateralToken1", color = "blue" ];
+  "PanopticPool.numberOfPositions" [ label = "numberOfPositions", color = "green" ];
+  "PanopticPool.getUniV3TWAP" [ label = "getUniV3TWAP" ];
+  "PanopticPool._checkLiquiditySpread" [ label = "_checkLiquiditySpread" ];
+  "PanopticPool._getPremia" [ label = "_getPremia" ];
+  "PanopticPool.settleLongPremium" [ label = "settleLongPremium", color = "blue" ];
+  "PanopticPool._updateSettlementPostMint" [ label = "_updateSettlementPostMint" ];
+  "PanopticPool._getAvailablePremium" [ label = "_getAvailablePremium" ];
+  "PanopticPool._getTotalLiquidity" [ label = "_getTotalLiquidity" ];
+  "PanopticPool._updateSettlementPostBurn" [ label = "_updateSettlementPostBurn" ];
+  "PanopticPool.address" [ label = "address" ];
+  "PanopticPool.IUniswapV3Pool" [ label = "IUniswapV3Pool" ];
+  "PanopticPool.type" [ label = "type" ];
+}
+
+subgraph "clusterErrors" {
+  graph [ label = "Errors", color = "lightgray" ];
+  "Errors.PoolAlreadyInitialized" [ label = "PoolAlreadyInitialized" ];
+  "Errors.PriceBoundFail" [ label = "PriceBoundFail" ];
+  "Errors.InvalidTokenIdParameter" [ label = "InvalidTokenIdParameter" ];
+  "Errors.PositionAlreadyMinted" [ label = "PositionAlreadyMinted" ];
+  "Errors.NotEnoughCollateral" [ label = "NotEnoughCollateral" ];
+  "Errors.StaleTWAP" [ label = "StaleTWAP" ];
+  "Errors.NotMarginCalled" [ label = "NotMarginCalled" ];
+  "Errors.InputListFail" [ label = "InputListFail" ];
+  "Errors.TooManyPositionsOpen" [ label = "TooManyPositionsOpen" ];
+  "Errors.EffectiveLiquidityAboveThreshold" [ label = "EffectiveLiquidityAboveThreshold" ];
+  "Errors.NotALongLeg" [ label = "NotALongLeg" ];
+}
+
+subgraph "clusterInteractionHelper" {
+  graph [ label = "InteractionHelper", color = "lightgray" ];
+  "InteractionHelper.doApprovals" [ label = "doApprovals" ];
+}
+
+subgraph "clusterIUniswapV3Pool" {
+  graph [ label = "IUniswapV3Pool", color = "lightgray" ];
+  "IUniswapV3Pool.slot0" [ label = "slot0" ];
+}
+
+subgraph "clusterLeftRightUnsigned" {
+  graph [ label = "LeftRightUnsigned", color = "lightgray" ];
+  "LeftRightUnsigned.rightSlot" [ label = "rightSlot" ];
+  "LeftRightUnsigned.leftSlot" [ label = "leftSlot" ];
+  "LeftRightUnsigned.unwrap" [ label = "unwrap" ];
+  "LeftRightUnsigned.wrap" [ label = "wrap" ];
+  "LeftRightUnsigned.sub" [ label = "sub" ];
+}
+
+subgraph "clusterLeftRightSigned" {
+  graph [ label = "LeftRightSigned", color = "lightgray" ];
+  "LeftRightSigned.rightSlot" [ label = "rightSlot" ];
+  "LeftRightSigned.leftSlot" [ label = "leftSlot" ];
+  "LeftRightSigned.unwrap" [ label = "unwrap" ];
+  "LeftRightSigned.add" [ label = "add" ];
+  "LeftRightSigned.wrap" [ label = "wrap" ];
+  "LeftRightSigned.toRightSlot" [ label = "toRightSlot" ];
+  "LeftRightSigned.toLeftSlot" [ label = "toLeftSlot" ];
+  "LeftRightSigned.sub" [ label = "sub" ];
+}
+
+subgraph "clusterFeesCalc" {
+  graph [ label = "FeesCalc", color = "lightgray" ];
+  "FeesCalc.getPortfolioValue" [ label = "getPortfolioValue" ];
+}
+
+subgraph "clusterTokenId" {
+  graph [ label = "TokenId", color = "lightgray" ];
+  "TokenId.unwrap" [ label = "unwrap" ];
+  "TokenId.countLegs" [ label = "countLegs" ];
+  "TokenId.isLong" [ label = "isLong" ];
+  "TokenId.strike" [ label = "strike" ];
+  "TokenId.width" [ label = "width" ];
+  "TokenId.tokenType" [ label = "tokenType" ];
+  "TokenId.poolId" [ label = "poolId" ];
+  "TokenId.asTicks" [ label = "asTicks" ];
+}
+
+subgraph "clusterPanopticMath" {
+  graph [ label = "PanopticMath", color = "lightgray" ];
+  "PanopticMath.computeInternalMedian" [ label = "computeInternalMedian" ];
+  "PanopticMath.computeExercisedAmounts" [ label = "computeExercisedAmounts" ];
+  "PanopticMath.computeMedianObservedPrice" [ label = "computeMedianObservedPrice" ];
+  "PanopticMath.getLiquidationBonus" [ label = "getLiquidationBonus" ];
+  "PanopticMath.haircutPremia" [ label = "haircutPremia" ];
+  "PanopticMath.getRefundAmounts" [ label = "getRefundAmounts" ];
+  "PanopticMath.updatePositionsHash" [ label = "updatePositionsHash" ];
+  "PanopticMath.twapFilter" [ label = "twapFilter" ];
+  "PanopticMath.getLiquidityChunk" [ label = "getLiquidityChunk" ];
+}
+
+subgraph "clusterSemiFungiblePositionManager" {
+  graph [ label = "SemiFungiblePositionManager", color = "lightgray" ];
+  "SemiFungiblePositionManager.getPoolId" [ label = "getPoolId" ];
+  "SemiFungiblePositionManager.mintTokenizedPosition" [ label = "mintTokenizedPosition" ];
+  "SemiFungiblePositionManager.getAccountPremium" [ label = "getAccountPremium" ];
+  "SemiFungiblePositionManager.burnTokenizedPosition" [ label = "burnTokenizedPosition" ];
+  "SemiFungiblePositionManager.getAccountLiquidity" [ label = "getAccountLiquidity" ];
+}
+
+subgraph "clusterCollateralTracker" {
+  graph [ label = "CollateralTracker", color = "lightgray" ];
+  "CollateralTracker.takeCommissionAddData" [ label = "takeCommissionAddData" ];
+  "CollateralTracker.exercise" [ label = "exercise" ];
+  "CollateralTracker.getAccountMarginDetails" [ label = "getAccountMarginDetails" ];
+  "CollateralTracker.delegate" [ label = "delegate" ];
+  "CollateralTracker.revoke" [ label = "revoke" ];
+  "CollateralTracker.exerciseCost" [ label = "exerciseCost" ];
+  "CollateralTracker.refund" [ label = "refund" ];
+}
+
+subgraph "clusterMath" {
+  graph [ label = "Math", color = "lightgray" ];
+  "Math.min" [ label = "min" ];
+  "Math.abs" [ label = "abs" ];
+  "Math.getSqrtRatioAtTick" [ label = "getSqrtRatioAtTick" ];
+  "Math.unsafeDivRoundingUp" [ label = "unsafeDivRoundingUp" ];
+  "Math.mulDiv" [ label = "mulDiv" ];
+  "Math.mulDiv96" [ label = "mulDiv96" ];
+  "Math.mulDivRoundingUp" [ label = "mulDivRoundingUp" ];
+  "Math.mulDiv96RoundingUp" [ label = "mulDiv96RoundingUp" ];
+  "Math.max" [ label = "max" ];
+}
+
+subgraph "clusterLiquidityChunk" {
+  graph [ label = "LiquidityChunk", color = "lightgray" ];
+  "LiquidityChunk.tickLower" [ label = "tickLower" ];
+  "LiquidityChunk.tickUpper" [ label = "tickUpper" ];
+  "LiquidityChunk.liquidity" [ label = "liquidity" ];
+}
+
+  "PanopticPool.startPool";
+  "PanopticPool.address";
+  "Errors.PoolAlreadyInitialized";
+  "PanopticPool.IUniswapV3Pool";
+  "InteractionHelper.doApprovals";
+  "PanopticPool.assertPriceWithinBounds";
+  "IUniswapV3Pool.slot0";
+  "Errors.PriceBoundFail";
+  "PanopticPool.optionPositionBalance";
+  "LeftRightUnsigned.rightSlot";
+  "LeftRightUnsigned.leftSlot";
+  "PanopticPool.calculateAccumulatedFeesBatch";
+  "PanopticPool._calculateAccumulatedPremia";
+  "LeftRightSigned.rightSlot";
+  "LeftRightSigned.leftSlot";
+  "PanopticPool.calculatePortfolioValue";
+  "FeesCalc.getPortfolioValue";
+  "TokenId.unwrap";
+  "LeftRightUnsigned.unwrap";
+  "PanopticPool._getPremia";
+  "LeftRightUnsigned.wrap";
+  "TokenId.countLegs";
+  "TokenId.isLong";
+  "TokenId.strike";
+  "TokenId.width";
+  "TokenId.tokenType";
+  "PanopticPool._getAvailablePremium";
+  "PanopticPool._getTotalLiquidity";
+  "LeftRightSigned.unwrap";
+  "LeftRightSigned.add";
+  "LeftRightSigned.wrap";
+  "PanopticPool.pokeMedian";
+  "PanopticMath.computeInternalMedian";
+  "PanopticPool.mintOptions";
+  "PanopticPool._mintOptions";
+  "PanopticPool.burnOptions";
+  "PanopticPool._burnOptions";
+  "PanopticPool._validateSolvency";
+  "PanopticPool._burnAllOptionsFrom";
+  "PanopticPool._validatePositionList";
+  "PanopticPool._getSlippageLimits";
+  "TokenId.poolId";
+  "SemiFungiblePositionManager.getPoolId";
+  "Errors.InvalidTokenIdParameter";
+  "Errors.PositionAlreadyMinted";
+  "PanopticPool._mintInSFPMAndUpdateCollateral";
+  "PanopticPool._addUserOption";
+  "SemiFungiblePositionManager.mintTokenizedPosition";
+  "PanopticPool._updateSettlementPostMint";
+  "PanopticPool._payCommissionAndWriteData";
+  "PanopticMath.computeExercisedAmounts";
+  "CollateralTracker.takeCommissionAddData";
+  "PanopticPool._updatePositionsHash";
+  "TokenId.asTicks";
+  "SemiFungiblePositionManager.getAccountPremium";
+  "PanopticPool.type";
+  "PanopticPool._checkLiquiditySpread";
+  "Math.min";
+  "PanopticPool._burnAndHandleExercise";
+  "PanopticPool._updatePositionDataBurn";
+  "PanopticMath.computeMedianObservedPrice";
+  "PanopticPool._checkSolvencyAtTick";
+  "Errors.NotEnoughCollateral";
+  "Math.abs";
+  "SemiFungiblePositionManager.burnTokenizedPosition";
+  "PanopticPool._updateSettlementPostBurn";
+  "CollateralTracker.exercise";
+  "LeftRightSigned.toRightSlot";
+  "LeftRightSigned.toLeftSlot";
+  "PanopticPool.liquidate";
+  "PanopticPool.getUniV3TWAP";
+  "Errors.StaleTWAP";
+  "CollateralTracker.getAccountMarginDetails";
+  "PanopticPool._getSolvencyBalances";
+  "Math.getSqrtRatioAtTick";
+  "Errors.NotMarginCalled";
+  "CollateralTracker.delegate";
+  "PanopticMath.getLiquidationBonus";
+  "PanopticMath.haircutPremia";
+  "CollateralTracker.revoke";
+  "PanopticPool.forceExercise";
+  "Errors.InputListFail";
+  "LeftRightSigned.sub";
+  "CollateralTracker.exerciseCost";
+  "PanopticMath.getRefundAmounts";
+  "CollateralTracker.refund";
+  "Math.unsafeDivRoundingUp";
+  "Math.mulDiv";
+  "Math.mulDiv96";
+  "Math.mulDivRoundingUp";
+  "Math.mulDiv96RoundingUp";
+  "PanopticMath.updatePositionsHash";
+  "Errors.TooManyPositionsOpen";
+  "PanopticMath.twapFilter";
+  "SemiFungiblePositionManager.getAccountLiquidity";
+  "Errors.EffectiveLiquidityAboveThreshold";
+  "PanopticMath.getLiquidityChunk";
+  "LiquidityChunk.tickLower";
+  "LiquidityChunk.tickUpper";
+  "LiquidityChunk.liquidity";
+  "PanopticPool.settleLongPremium";
+  "Errors.NotALongLeg";
+  "LeftRightUnsigned.sub";
+  "Math.max";
+  "PanopticPool.startPool" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool.startPool" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool.startPool" -> "Errors.PoolAlreadyInitialized" [ color = "orange" ];
+  "PanopticPool.startPool" -> "PanopticPool.IUniswapV3Pool" [ color = "green" ];
+  "PanopticPool.startPool" -> "PanopticPool.IUniswapV3Pool" [ color = "green" ];
+  "PanopticPool.startPool" -> "InteractionHelper.doApprovals" [ color = "orange" ];
+  "PanopticPool.assertPriceWithinBounds" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.assertPriceWithinBounds" -> "Errors.PriceBoundFail" [ color = "orange" ];
+  "PanopticPool.optionPositionBalance" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.optionPositionBalance" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.optionPositionBalance" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.calculateAccumulatedFeesBatch" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.calculateAccumulatedFeesBatch" -> "PanopticPool._calculateAccumulatedPremia" [ color = "green" ];
+  "PanopticPool.calculateAccumulatedFeesBatch" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.calculateAccumulatedFeesBatch" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.calculatePortfolioValue" -> "FeesCalc.getPortfolioValue" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "TokenId.unwrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightUnsigned.unwrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "PanopticPool._getPremia" [ color = "green" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "TokenId.countLegs" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "TokenId.strike" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "TokenId.width" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "PanopticPool._getAvailablePremium" [ color = "green" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "PanopticPool._getTotalLiquidity" [ color = "green" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightSigned.unwrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightSigned.add" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightUnsigned.unwrap" [ color = "orange" ];
+  "PanopticPool._calculateAccumulatedPremia" -> "LeftRightSigned.add" [ color = "orange" ];
+  "PanopticPool.pokeMedian" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.pokeMedian" -> "PanopticMath.computeInternalMedian" [ color = "orange" ];
+  "PanopticPool.mintOptions" -> "PanopticPool._mintOptions" [ color = "green" ];
+  "PanopticPool.burnOptions" -> "PanopticPool._burnOptions" [ color = "green" ];
+  "PanopticPool.burnOptions" -> "PanopticPool._validateSolvency" [ color = "green" ];
+  "PanopticPool.burnOptions" -> "PanopticPool._burnAllOptionsFrom" [ color = "green" ];
+  "PanopticPool.burnOptions" -> "PanopticPool._validateSolvency" [ color = "green" ];
+  "PanopticPool._mintOptions" -> "PanopticPool._validatePositionList" [ color = "green" ];
+  "PanopticPool._mintOptions" -> "PanopticPool._getSlippageLimits" [ color = "green" ];
+  "PanopticPool._mintOptions" -> "TokenId.poolId" [ color = "orange" ];
+  "PanopticPool._mintOptions" -> "SemiFungiblePositionManager.getPoolId" [ color = "orange" ];
+  "PanopticPool._mintOptions" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._mintOptions" -> "Errors.InvalidTokenIdParameter" [ color = "orange" ];
+  "PanopticPool._mintOptions" -> "LeftRightUnsigned.unwrap" [ color = "orange" ];
+  "PanopticPool._mintOptions" -> "Errors.PositionAlreadyMinted" [ color = "orange" ];
+  "PanopticPool._mintOptions" -> "PanopticPool._mintInSFPMAndUpdateCollateral" [ color = "green" ];
+  "PanopticPool._mintOptions" -> "PanopticPool._addUserOption" [ color = "green" ];
+  "PanopticPool._mintOptions" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._mintOptions" -> "PanopticPool._validateSolvency" [ color = "green" ];
+  "PanopticPool._mintInSFPMAndUpdateCollateral" -> "SemiFungiblePositionManager.mintTokenizedPosition" [ color = "orange" ];
+  "PanopticPool._mintInSFPMAndUpdateCollateral" -> "PanopticPool._updateSettlementPostMint" [ color = "green" ];
+  "PanopticPool._mintInSFPMAndUpdateCollateral" -> "PanopticPool._payCommissionAndWriteData" [ color = "green" ];
+  "PanopticPool._payCommissionAndWriteData" -> "PanopticMath.computeExercisedAmounts" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "CollateralTracker.takeCommissionAddData" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "CollateralTracker.takeCommissionAddData" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._payCommissionAndWriteData" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "PanopticPool._updatePositionsHash" [ color = "green" ];
+  "PanopticPool._addUserOption" -> "TokenId.countLegs" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "TokenId.asTicks" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "SemiFungiblePositionManager.getAccountPremium" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._addUserOption" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._addUserOption" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "PanopticPool.type" [ color = "green" ];
+  "PanopticPool._addUserOption" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._addUserOption" -> "PanopticPool._checkLiquiditySpread" [ color = "green" ];
+  "PanopticPool._addUserOption" -> "Math.min" [ color = "orange" ];
+  "PanopticPool._burnAllOptionsFrom" -> "PanopticPool._burnOptions" [ color = "green" ];
+  "PanopticPool._burnAllOptionsFrom" -> "LeftRightSigned.add" [ color = "orange" ];
+  "PanopticPool._burnOptions" -> "PanopticPool._getSlippageLimits" [ color = "green" ];
+  "PanopticPool._burnOptions" -> "PanopticPool._burnAndHandleExercise" [ color = "green" ];
+  "PanopticPool._burnOptions" -> "PanopticPool._updatePositionDataBurn" [ color = "green" ];
+  "PanopticPool._updatePositionDataBurn" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._updatePositionDataBurn" -> "TokenId.countLegs" [ color = "orange" ];
+  "PanopticPool._updatePositionDataBurn" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool._updatePositionDataBurn" -> "TokenId.asTicks" [ color = "orange" ];
+  "PanopticPool._updatePositionDataBurn" -> "PanopticPool._checkLiquiditySpread" [ color = "green" ];
+  "PanopticPool._updatePositionDataBurn" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._updatePositionDataBurn" -> "PanopticPool._updatePositionsHash" [ color = "green" ];
+  "PanopticPool._validateSolvency" -> "PanopticPool._validatePositionList" [ color = "green" ];
+  "PanopticPool._validateSolvency" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool._validateSolvency" -> "PanopticMath.computeMedianObservedPrice" [ color = "orange" ];
+  "PanopticPool._validateSolvency" -> "PanopticMath.computeMedianObservedPrice" [ color = "orange" ];
+  "PanopticPool._validateSolvency" -> "PanopticMath.computeInternalMedian" [ color = "orange" ];
+  "PanopticPool._validateSolvency" -> "PanopticPool._checkSolvencyAtTick" [ color = "green" ];
+  "PanopticPool._validateSolvency" -> "Errors.NotEnoughCollateral" [ color = "orange" ];
+  "PanopticPool._validateSolvency" -> "Math.abs" [ color = "orange" ];
+  "PanopticPool._validateSolvency" -> "PanopticPool._checkSolvencyAtTick" [ color = "green" ];
+  "PanopticPool._validateSolvency" -> "Errors.NotEnoughCollateral" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "SemiFungiblePositionManager.burnTokenizedPosition" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "PanopticPool._updateSettlementPostBurn" [ color = "green" ];
+  "PanopticPool._burnAndHandleExercise" -> "PanopticMath.computeExercisedAmounts" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "CollateralTracker.exercise" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.toRightSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "CollateralTracker.exercise" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._burnAndHandleExercise" -> "LeftRightSigned.toLeftSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticPool._validatePositionList" [ color = "green" ];
+  "PanopticPool.liquidate" -> "PanopticPool.getUniV3TWAP" [ color = "green" ];
+  "PanopticPool.liquidate" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "Math.abs" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "Errors.StaleTWAP" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticPool._calculateAccumulatedPremia" [ color = "green" ];
+  "PanopticPool.liquidate" -> "CollateralTracker.getAccountMarginDetails" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "CollateralTracker.getAccountMarginDetails" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticPool._getSolvencyBalances" [ color = "green" ];
+  "PanopticPool.liquidate" -> "Math.getSqrtRatioAtTick" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "Errors.NotMarginCalled" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "CollateralTracker.delegate" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "CollateralTracker.delegate" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticPool._burnAllOptionsFrom" [ color = "green" ];
+  "PanopticPool.liquidate" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticMath.getLiquidationBonus" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "Math.getSqrtRatioAtTick" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "Math.getSqrtRatioAtTick" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticMath.haircutPremia" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "Math.getSqrtRatioAtTick" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "CollateralTracker.revoke" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "CollateralTracker.revoke" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "PanopticPool._validatePositionList" [ color = "green" ];
+  "PanopticPool.liquidate" -> "PanopticPool._checkSolvencyAtTick" [ color = "green" ];
+  "PanopticPool.liquidate" -> "Errors.NotEnoughCollateral" [ color = "orange" ];
+  "PanopticPool.liquidate" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "Errors.InputListFail" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "PanopticPool._validatePositionList" [ color = "green" ];
+  "PanopticPool.forceExercise" -> "PanopticMath.computeExercisedAmounts" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "PanopticPool.getUniV3TWAP" [ color = "green" ];
+  "PanopticPool.forceExercise" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "PanopticPool._calculateAccumulatedPremia" [ color = "green" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.sub" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.delegate" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.delegate" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "PanopticPool._burnAllOptionsFrom" [ color = "green" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.exerciseCost" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.add" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "PanopticMath.getRefundAmounts" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.refund" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.refund" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.refund" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "CollateralTracker.refund" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.forceExercise" -> "PanopticPool._validateSolvency" [ color = "green" ];
+  "PanopticPool.forceExercise" -> "PanopticPool._validateSolvency" [ color = "green" ];
+  "PanopticPool._checkSolvencyAtTick" -> "PanopticPool._calculateAccumulatedPremia" [ color = "green" ];
+  "PanopticPool._checkSolvencyAtTick" -> "CollateralTracker.getAccountMarginDetails" [ color = "orange" ];
+  "PanopticPool._checkSolvencyAtTick" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._checkSolvencyAtTick" -> "CollateralTracker.getAccountMarginDetails" [ color = "orange" ];
+  "PanopticPool._checkSolvencyAtTick" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._checkSolvencyAtTick" -> "PanopticPool._getSolvencyBalances" [ color = "green" ];
+  "PanopticPool._checkSolvencyAtTick" -> "Math.getSqrtRatioAtTick" [ color = "orange" ];
+  "PanopticPool._checkSolvencyAtTick" -> "Math.unsafeDivRoundingUp" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "Math.mulDiv" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "Math.mulDiv96" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "Math.mulDivRoundingUp" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "Math.mulDiv96RoundingUp" [ color = "orange" ];
+  "PanopticPool._getSolvencyBalances" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._validatePositionList" -> "PanopticMath.updatePositionsHash" [ color = "orange" ];
+  "PanopticPool._validatePositionList" -> "Errors.InputListFail" [ color = "orange" ];
+  "PanopticPool._updatePositionsHash" -> "PanopticMath.updatePositionsHash" [ color = "orange" ];
+  "PanopticPool._updatePositionsHash" -> "Errors.TooManyPositionsOpen" [ color = "orange" ];
+  "PanopticPool.getUniV3TWAP" -> "PanopticMath.twapFilter" [ color = "orange" ];
+  "PanopticPool._checkLiquiditySpread" -> "SemiFungiblePositionManager.getAccountLiquidity" [ color = "orange" ];
+  "PanopticPool._checkLiquiditySpread" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._checkLiquiditySpread" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._checkLiquiditySpread" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._checkLiquiditySpread" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._checkLiquiditySpread" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._checkLiquiditySpread" -> "Errors.EffectiveLiquidityAboveThreshold" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "TokenId.countLegs" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "PanopticMath.getLiquidityChunk" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "SemiFungiblePositionManager.getAccountPremium" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._getPremia" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._getPremia" -> "LiquidityChunk.tickLower" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LiquidityChunk.tickUpper" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LiquidityChunk.liquidity" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LiquidityChunk.liquidity" [ color = "orange" ];
+  "PanopticPool._getPremia" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "PanopticPool._validatePositionList" [ color = "green" ];
+  "PanopticPool.settleLongPremium" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "Errors.NotALongLeg" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "TokenId.asTicks" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "SemiFungiblePositionManager.getAccountPremium" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool.settleLongPremium" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightUnsigned.sub" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "PanopticMath.getLiquidityChunk" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "CollateralTracker.exercise" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "CollateralTracker.exercise" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "TokenId.strike" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "TokenId.width" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "LeftRightSigned.unwrap" [ color = "orange" ];
+  "PanopticPool.settleLongPremium" -> "PanopticPool._validateSolvency" [ color = "green" ];
+  "PanopticPool._updateSettlementPostMint" -> "TokenId.countLegs" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "TokenId.strike" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "TokenId.width" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "PanopticMath.getLiquidityChunk" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "PanopticPool._getTotalLiquidity" [ color = "green" ];
+  "PanopticPool._updateSettlementPostMint" -> "SemiFungiblePositionManager.getAccountPremium" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._updateSettlementPostMint" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._updateSettlementPostMint" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "LiquidityChunk.tickLower" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "LiquidityChunk.tickUpper" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "PanopticPool.type" [ color = "green" ];
+  "PanopticPool._updateSettlementPostMint" -> "LiquidityChunk.liquidity" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostMint" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "Math.min" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "PanopticPool.type" [ color = "green" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "Math.min" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getAvailablePremium" -> "PanopticPool.type" [ color = "green" ];
+  "PanopticPool._getAvailablePremium" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._getTotalLiquidity" -> "TokenId.asTicks" [ color = "orange" ];
+  "PanopticPool._getTotalLiquidity" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._getTotalLiquidity" -> "SemiFungiblePositionManager.getAccountLiquidity" [ color = "orange" ];
+  "PanopticPool._getTotalLiquidity" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._getTotalLiquidity" -> "PanopticPool.address" [ color = "green" ];
+  "PanopticPool._getTotalLiquidity" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._getTotalLiquidity" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "TokenId.countLegs" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "PanopticPool._getPremia" [ color = "green" ];
+  "PanopticPool._updateSettlementPostBurn" -> "PanopticPool.type" [ color = "green" ];
+  "PanopticPool._updateSettlementPostBurn" -> "TokenId.strike" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "TokenId.width" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "TokenId.tokenType" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.unwrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "TokenId.isLong" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.unwrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.unwrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.add" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "PanopticMath.getLiquidityChunk" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "PanopticPool._getTotalLiquidity" [ color = "green" ];
+  "PanopticPool._updateSettlementPostBurn" -> "PanopticPool._getAvailablePremium" [ color = "green" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.unwrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.sub" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.add" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.wrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.unwrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "Math.max" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.rightSlot" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "Math.max" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightSigned.leftSlot" [ color = "orange" ];
+  "PanopticPool._updateSettlementPostBurn" -> "LeftRightUnsigned.wrap" [ color = "orange" ];
+
+
+rankdir=LR
+node [shape=plaintext]
+subgraph cluster_01 { 
+label = "Legend";
+key [label=<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+  <tr><td align="right" port="i1">Internal Call</td></tr>
+  <tr><td align="right" port="i2">External Call</td></tr>
+  <tr><td align="right" port="i3">Defined Contract</td></tr>
+  <tr><td align="right" port="i4">Undefined Contract</td></tr>
+  </table>>]
+key2 [label=<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+  <tr><td port="i1">&nbsp;&nbsp;&nbsp;</td></tr>
+  <tr><td port="i2">&nbsp;&nbsp;&nbsp;</td></tr>
+  <tr><td port="i3" bgcolor="lightgray">&nbsp;&nbsp;&nbsp;</td></tr>
+  <tr><td port="i4">
+    <table border="1" cellborder="0" cellspacing="0" cellpadding="7" color="lightgray">
+      <tr>
+       <td></td>
+      </tr>
+     </table>
+  </td></tr>
+  </table>>]
+key:i1:e -> key2:i1:w [color="green"]
+key:i2:e -> key2:i2:w [color="orange"]
+}
+}
+

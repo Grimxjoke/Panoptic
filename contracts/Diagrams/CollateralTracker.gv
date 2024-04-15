@@ -1,0 +1,425 @@
+digraph G {
+    graph [ratio = "auto"; page = "100"; compound = true; bgcolor = "#2e3e56";];
+    node [style = "filled"; fillcolor = "#edad56"; color = "#edad56"; penwidth = 3;];
+    edge [color = "#fcfcfc"; penwidth = 2; fontname = "helvetica Neue Ultra Light";];
+    subgraph "clusterCollateralTracker" {
+        graph [label = "CollateralTracker"; color = "#445773"; fontcolor = "#f0f0f0"; style = "rounded"; bgcolor = "#445773";];
+        "CollateralTracker.onlyPanopticPool" [label = "onlyPanopticPool";color = "#1bc6a6";shape = doubleoctagon;];
+        "CollateralTracker.<Constructor>" [label = "<Constructor>";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.startToken" [label = "startToken";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.getPoolData" [label = "getPoolData";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.name" [label = "name";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.symbol" [label = "symbol";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.decimals" [label = "decimals";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.transfer" [label = "transfer";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.transferFrom" [label = "transferFrom";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.asset" [label = "asset";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.totalAssets" [label = "totalAssets";];
+        "CollateralTracker.convertToShares" [label = "convertToShares";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.convertToAssets" [label = "convertToAssets";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.maxDeposit" [label = "maxDeposit";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.previewDeposit" [label = "previewDeposit";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.deposit" [label = "deposit";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.maxMint" [label = "maxMint";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.previewMint" [label = "previewMint";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.mint" [label = "mint";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.maxWithdraw" [label = "maxWithdraw";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.previewWithdraw" [label = "previewWithdraw";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.withdraw" [label = "withdraw";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.maxRedeem" [label = "maxRedeem";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.previewRedeem" [label = "previewRedeem";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker.redeem" [label = "redeem";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.exerciseCost" [label = "exerciseCost";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker._poolUtilization" [label = "_poolUtilization";];
+        "CollateralTracker._sellCollateralRatio" [label = "_sellCollateralRatio";];
+        "CollateralTracker._buyCollateralRatio" [label = "_buyCollateralRatio";];
+        "CollateralTracker.delegate" [label = "delegate";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.refund" [label = "refund";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.revoke" [label = "revoke";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.takeCommissionAddData" [label = "takeCommissionAddData";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker.exercise" [label = "exercise";color = "#ffbdb9";fillcolor = "#ffbdb9";];
+        "CollateralTracker._getExchangedAmount" [label = "_getExchangedAmount";];
+        "CollateralTracker.getAccountMarginDetails" [label = "getAccountMarginDetails";color = "#FF9797";fillcolor = "#FF9797";];
+        "CollateralTracker._getAccountMargin" [label = "_getAccountMargin";];
+        "CollateralTracker._getTotalRequiredCollateral" [label = "_getTotalRequiredCollateral";];
+        "CollateralTracker._getRequiredCollateralAtTickSinglePosition" [label = "_getRequiredCollateralAtTickSinglePosition";];
+        "CollateralTracker._getRequiredCollateralSingleLeg" [label = "_getRequiredCollateralSingleLeg";];
+        "CollateralTracker._getRequiredCollateralSingleLegNoPartner" [label = "_getRequiredCollateralSingleLegNoPartner";];
+        "CollateralTracker._getRequiredCollateralSingleLegPartner" [label = "_getRequiredCollateralSingleLegPartner";];
+        "CollateralTracker._getRequiredCollateralAtUtilization" [label = "_getRequiredCollateralAtUtilization";];
+        "CollateralTracker._computeSpread" [label = "_computeSpread";];
+        "CollateralTracker._computeStrangle" [label = "_computeStrangle";];
+        "CollateralTracker.type" [label = "type";];
+        "CollateralTracker._mint" [label = "_mint";];
+        "CollateralTracker._burn" [label = "_burn";];
+        "CollateralTracker._transferFrom" [label = "_transferFrom";];
+    }
+    
+    subgraph "clusterErrors" {
+        graph [label = "Errors"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "Errors.NotPanopticPool" [label = "NotPanopticPool";];
+        "Errors.CollateralTokenAlreadyInitialized" [label = "CollateralTokenAlreadyInitialized";];
+        "Errors.PositionCountNotZero" [label = "PositionCountNotZero";];
+        "Errors.DepositTooLarge" [label = "DepositTooLarge";];
+        "Errors.ExceedsMaximumRedemption" [label = "ExceedsMaximumRedemption";];
+    }
+    
+    subgraph "clusterInteractionHelper" {
+        graph [label = "InteractionHelper"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "InteractionHelper.computeName" [label = "computeName";];
+        "InteractionHelper.computeSymbol" [label = "computeSymbol";];
+        "InteractionHelper.computeDecimals" [label = "computeDecimals";];
+    }
+    
+    subgraph "clusterPanopticPool" {
+        graph [label = "PanopticPool"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "PanopticPool.numberOfPositions" [label = "numberOfPositions";];
+    }
+    
+    subgraph "clusterERC20Minimal" {
+        graph [label = "ERC20Minimal"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "ERC20Minimal.transfer" [label = "transfer";];
+        "ERC20Minimal.transferFrom" [label = "transferFrom";];
+    }
+    
+    subgraph "clusterMath" {
+        graph [label = "Math"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "Math.mulDiv" [label = "mulDiv";];
+        "Math.mulDivRoundingUp" [label = "mulDivRoundingUp";];
+        "Math.min" [label = "min";];
+        "Math.unsafeDivRoundingUp" [label = "unsafeDivRoundingUp";];
+        "Math.max" [label = "max";];
+        "Math.abs" [label = "abs";];
+        "Math.getAmountsForLiquidity" [label = "getAmountsForLiquidity";];
+        "Math.getSqrtRatioAtTick" [label = "getSqrtRatioAtTick";];
+        "Math.max24" [label = "max24";];
+        "Math.mulDiv96RoundingUp" [label = "mulDiv96RoundingUp";];
+    }
+    
+    subgraph "clusterSafeTransferLib" {
+        graph [label = "SafeTransferLib"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "SafeTransferLib.safeTransferFrom" [label = "safeTransferFrom";];
+    }
+    
+    subgraph "clusterTokenId" {
+        graph [label = "TokenId"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "TokenId.countLegs" [label = "countLegs";];
+        "TokenId.isLong" [label = "isLong";];
+        "TokenId.width" [label = "width";];
+        "TokenId.tickSpacing" [label = "tickSpacing";];
+        "TokenId.strike" [label = "strike";];
+        "TokenId.tokenType" [label = "tokenType";];
+        "TokenId.wrap" [label = "wrap";];
+        "TokenId.riskPartner" [label = "riskPartner";];
+        "TokenId.asTicks" [label = "asTicks";];
+        "TokenId.asset" [label = "asset";];
+    }
+    
+    subgraph "clusterPanopticMath" {
+        graph [label = "PanopticMath"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "PanopticMath.getLiquidityChunk" [label = "getLiquidityChunk";];
+        "PanopticMath.getAmountsMoved" [label = "getAmountsMoved";];
+    }
+    
+    subgraph "clusterLeftRightSigned" {
+        graph [label = "LeftRightSigned"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "LeftRightSigned.sub" [label = "sub";];
+        "LeftRightSigned.wrap" [label = "wrap";];
+        "LeftRightSigned.toRightSlot" [label = "toRightSlot";];
+        "LeftRightSigned.rightSlot" [label = "rightSlot";];
+        "LeftRightSigned.leftSlot" [label = "leftSlot";];
+    }
+    
+    subgraph "clusterLeftRightUnsigned" {
+        graph [label = "LeftRightUnsigned"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "LeftRightUnsigned.toRightSlot" [label = "toRightSlot";];
+        "LeftRightUnsigned.wrap" [label = "wrap";];
+        "LeftRightUnsigned.rightSlot" [label = "rightSlot";];
+        "LeftRightUnsigned.leftSlot" [label = "leftSlot";];
+    }
+    
+    subgraph "clusternetBalance" {
+        graph [label = "netBalance"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "netBalance.toUint128" [label = "toUint128";];
+    }
+    
+    subgraph "clustertokenRequired" {
+        graph [label = "tokenRequired"; color = "#e8726d"; fontcolor = "#f0f0f0"; style = "rounded,dashed"; bgcolor = "#3b4b63";];
+        "tokenRequired.toUint128" [label = "toUint128";];
+    }
+    
+    "CollateralTracker.onlyPanopticPool";
+    "Errors.NotPanopticPool";
+    "CollateralTracker.startToken";
+    "Errors.CollateralTokenAlreadyInitialized";
+    "CollateralTracker.getPoolData";
+    "CollateralTracker._poolUtilization";
+    "CollateralTracker.name";
+    "InteractionHelper.computeName";
+    "CollateralTracker.symbol";
+    "InteractionHelper.computeSymbol";
+    "CollateralTracker.decimals";
+    "InteractionHelper.computeDecimals";
+    "CollateralTracker.transfer";
+    "PanopticPool.numberOfPositions";
+    "Errors.PositionCountNotZero";
+    "ERC20Minimal.transfer";
+    "CollateralTracker.transferFrom";
+    "ERC20Minimal.transferFrom";
+    "CollateralTracker.convertToShares";
+    "Math.mulDiv";
+    "CollateralTracker.totalAssets";
+    "CollateralTracker.convertToAssets";
+    "CollateralTracker.maxDeposit";
+    "CollateralTracker.type";
+    "CollateralTracker.previewDeposit";
+    "CollateralTracker.deposit";
+    "Errors.DepositTooLarge";
+    "SafeTransferLib.safeTransferFrom";
+    "CollateralTracker._mint";
+    "CollateralTracker.maxMint";
+    "CollateralTracker.previewMint";
+    "Math.mulDivRoundingUp";
+    "CollateralTracker.mint";
+    "CollateralTracker.maxWithdraw";
+    "Math.min";
+    "CollateralTracker.previewWithdraw";
+    "CollateralTracker.withdraw";
+    "Errors.ExceedsMaximumRedemption";
+    "CollateralTracker._burn";
+    "CollateralTracker.maxRedeem";
+    "CollateralTracker.previewRedeem";
+    "CollateralTracker.redeem";
+    "CollateralTracker.exerciseCost";
+    "TokenId.countLegs";
+    "TokenId.isLong";
+    "Math.unsafeDivRoundingUp";
+    "TokenId.width";
+    "TokenId.tickSpacing";
+    "Math.max";
+    "Math.abs";
+    "TokenId.strike";
+    "PanopticMath.getLiquidityChunk";
+    "Math.getAmountsForLiquidity";
+    "TokenId.tokenType";
+    "LeftRightSigned.sub";
+    "LeftRightSigned.wrap";
+    "LeftRightSigned.toRightSlot";
+    "LeftRightSigned.rightSlot";
+    "LeftRightSigned.leftSlot";
+    "CollateralTracker.delegate";
+    "CollateralTracker._transferFrom";
+    "CollateralTracker.refund";
+    "CollateralTracker.revoke";
+    "CollateralTracker.takeCommissionAddData";
+    "CollateralTracker._getExchangedAmount";
+    "CollateralTracker.exercise";
+    "CollateralTracker.getAccountMarginDetails";
+    "CollateralTracker._getAccountMargin";
+    "CollateralTracker._getTotalRequiredCollateral";
+    "LeftRightUnsigned.toRightSlot";
+    "netBalance.toUint128";
+    "tokenRequired.toUint128";
+    "TokenId.wrap";
+    "LeftRightUnsigned.wrap";
+    "CollateralTracker._getRequiredCollateralAtTickSinglePosition";
+    "CollateralTracker._getRequiredCollateralSingleLeg";
+    "TokenId.riskPartner";
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner";
+    "CollateralTracker._getRequiredCollateralSingleLegPartner";
+    "PanopticMath.getAmountsMoved";
+    "LeftRightUnsigned.rightSlot";
+    "LeftRightUnsigned.leftSlot";
+    "CollateralTracker._getRequiredCollateralAtUtilization";
+    "TokenId.asTicks";
+    "Math.getSqrtRatioAtTick";
+    "Math.max24";
+    "Math.mulDiv96RoundingUp";
+    "CollateralTracker._computeSpread";
+    "CollateralTracker._computeStrangle";
+    "CollateralTracker._sellCollateralRatio";
+    "CollateralTracker._buyCollateralRatio";
+    "TokenId.asset";
+    "CollateralTracker.onlyPanopticPool" -> "Errors.NotPanopticPool" [color = "white";];
+    "CollateralTracker.startToken" -> "Errors.CollateralTokenAlreadyInitialized" [color = "white";];
+    "CollateralTracker.getPoolData" -> "CollateralTracker._poolUtilization" [color = "#1bc6a6";];
+    "CollateralTracker.name" -> "InteractionHelper.computeName" [color = "white";];
+    "CollateralTracker.symbol" -> "InteractionHelper.computeSymbol" [color = "white";];
+    "CollateralTracker.decimals" -> "InteractionHelper.computeDecimals" [color = "white";];
+    "CollateralTracker.transfer" -> "PanopticPool.numberOfPositions" [color = "white";];
+    "CollateralTracker.transfer" -> "Errors.PositionCountNotZero" [color = "white";];
+    "CollateralTracker.transfer" -> "ERC20Minimal.transfer" [color = "white";];
+    "CollateralTracker.transferFrom" -> "PanopticPool.numberOfPositions" [color = "white";];
+    "CollateralTracker.transferFrom" -> "Errors.PositionCountNotZero" [color = "white";];
+    "CollateralTracker.transferFrom" -> "ERC20Minimal.transferFrom" [color = "white";];
+    "CollateralTracker.convertToShares" -> "Math.mulDiv" [color = "white";];
+    "CollateralTracker.convertToShares" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.convertToAssets" -> "Math.mulDiv" [color = "white";];
+    "CollateralTracker.convertToAssets" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.maxDeposit" -> "CollateralTracker.type" [color = "#1bc6a6";];
+    "CollateralTracker.previewDeposit" -> "Math.mulDiv" [color = "white";];
+    "CollateralTracker.previewDeposit" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.deposit" -> "CollateralTracker.type" [color = "#1bc6a6";];
+    "CollateralTracker.deposit" -> "Errors.DepositTooLarge" [color = "white";];
+    "CollateralTracker.deposit" -> "CollateralTracker.previewDeposit" [color = "#1bc6a6";];
+    "CollateralTracker.deposit" -> "SafeTransferLib.safeTransferFrom" [color = "white";];
+    "CollateralTracker.deposit" -> "CollateralTracker._mint" [color = "#1bc6a6";];
+    "CollateralTracker.maxMint" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.maxMint" -> "CollateralTracker.type" [color = "#1bc6a6";];
+    "CollateralTracker.previewMint" -> "Math.mulDivRoundingUp" [color = "white";];
+    "CollateralTracker.previewMint" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.mint" -> "CollateralTracker.previewMint" [color = "#1bc6a6";];
+    "CollateralTracker.mint" -> "CollateralTracker.type" [color = "#1bc6a6";];
+    "CollateralTracker.mint" -> "Errors.DepositTooLarge" [color = "white";];
+    "CollateralTracker.mint" -> "SafeTransferLib.safeTransferFrom" [color = "white";];
+    "CollateralTracker.mint" -> "CollateralTracker._mint" [color = "#1bc6a6";];
+    "CollateralTracker.maxWithdraw" -> "CollateralTracker.convertToAssets" [color = "#1bc6a6";];
+    "CollateralTracker.maxWithdraw" -> "PanopticPool.numberOfPositions" [color = "white";];
+    "CollateralTracker.maxWithdraw" -> "Math.min" [color = "white";];
+    "CollateralTracker.previewWithdraw" -> "Math.mulDivRoundingUp" [color = "white";];
+    "CollateralTracker.previewWithdraw" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.withdraw" -> "CollateralTracker.maxWithdraw" [color = "#1bc6a6";];
+    "CollateralTracker.withdraw" -> "Errors.ExceedsMaximumRedemption" [color = "white";];
+    "CollateralTracker.withdraw" -> "CollateralTracker.previewWithdraw" [color = "#1bc6a6";];
+    "CollateralTracker.withdraw" -> "CollateralTracker.type" [color = "#1bc6a6";];
+    "CollateralTracker.withdraw" -> "CollateralTracker._burn" [color = "#1bc6a6";];
+    "CollateralTracker.withdraw" -> "SafeTransferLib.safeTransferFrom" [color = "white";];
+    "CollateralTracker.maxRedeem" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.maxRedeem" -> "PanopticPool.numberOfPositions" [color = "white";];
+    "CollateralTracker.maxRedeem" -> "Math.min" [color = "white";];
+    "CollateralTracker.previewRedeem" -> "CollateralTracker.convertToAssets" [color = "#1bc6a6";];
+    "CollateralTracker.redeem" -> "CollateralTracker.maxRedeem" [color = "#1bc6a6";];
+    "CollateralTracker.redeem" -> "Errors.ExceedsMaximumRedemption" [color = "white";];
+    "CollateralTracker.redeem" -> "CollateralTracker.type" [color = "#1bc6a6";];
+    "CollateralTracker.redeem" -> "CollateralTracker.previewRedeem" [color = "#1bc6a6";];
+    "CollateralTracker.redeem" -> "CollateralTracker._burn" [color = "#1bc6a6";];
+    "CollateralTracker.redeem" -> "SafeTransferLib.safeTransferFrom" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "TokenId.countLegs" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "TokenId.isLong" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "TokenId.width" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "TokenId.tickSpacing" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "Math.max" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "Math.abs" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "TokenId.strike" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "PanopticMath.getLiquidityChunk" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "Math.getAmountsForLiquidity" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "Math.getAmountsForLiquidity" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "TokenId.tokenType" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "LeftRightSigned.sub" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "LeftRightSigned.wrap" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "LeftRightSigned.toRightSlot" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "LeftRightSigned.rightSlot" [color = "white";];
+    "CollateralTracker.exerciseCost" -> "LeftRightSigned.leftSlot" [color = "white";];
+    "CollateralTracker._poolUtilization" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.delegate" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.delegate" -> "CollateralTracker._transferFrom" [color = "#1bc6a6";];
+    "CollateralTracker.delegate" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.refund" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.revoke" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.revoke" -> "CollateralTracker._transferFrom" [color = "#1bc6a6";];
+    "CollateralTracker.revoke" -> "CollateralTracker._mint" [color = "#1bc6a6";];
+    "CollateralTracker.revoke" -> "Math.mulDiv" [color = "white";];
+    "CollateralTracker.revoke" -> "Math.max" [color = "white";];
+    "CollateralTracker.revoke" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.revoke" -> "CollateralTracker._transferFrom" [color = "#1bc6a6";];
+    "CollateralTracker.refund" -> "CollateralTracker._transferFrom" [color = "#1bc6a6";];
+    "CollateralTracker.refund" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.refund" -> "CollateralTracker._transferFrom" [color = "#1bc6a6";];
+    "CollateralTracker.refund" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.takeCommissionAddData" -> "CollateralTracker._getExchangedAmount" [color = "#1bc6a6";];
+    "CollateralTracker.takeCommissionAddData" -> "Math.mulDivRoundingUp" [color = "white";];
+    "CollateralTracker.takeCommissionAddData" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.takeCommissionAddData" -> "CollateralTracker._burn" [color = "#1bc6a6";];
+    "CollateralTracker.takeCommissionAddData" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.takeCommissionAddData" -> "CollateralTracker._mint" [color = "#1bc6a6";];
+    "CollateralTracker.takeCommissionAddData" -> "CollateralTracker._poolUtilization" [color = "#1bc6a6";];
+    "CollateralTracker.exercise" -> "Math.mulDivRoundingUp" [color = "white";];
+    "CollateralTracker.exercise" -> "CollateralTracker.totalAssets" [color = "#1bc6a6";];
+    "CollateralTracker.exercise" -> "CollateralTracker._burn" [color = "#1bc6a6";];
+    "CollateralTracker.exercise" -> "CollateralTracker.convertToShares" [color = "#1bc6a6";];
+    "CollateralTracker.exercise" -> "CollateralTracker._mint" [color = "#1bc6a6";];
+    "CollateralTracker._getExchangedAmount" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker._getExchangedAmount" -> "Math.abs" [color = "white";];
+    "CollateralTracker._getExchangedAmount" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker.getAccountMarginDetails" -> "CollateralTracker._getAccountMargin" [color = "#1bc6a6";];
+    "CollateralTracker._getAccountMargin" -> "CollateralTracker._getTotalRequiredCollateral" [color = "#1bc6a6";];
+    "CollateralTracker._getAccountMargin" -> "CollateralTracker.convertToAssets" [color = "#1bc6a6";];
+    "CollateralTracker._getAccountMargin" -> "LeftRightUnsigned.toRightSlot" [color = "white";];
+    "CollateralTracker._getAccountMargin" -> "netBalance.toUint128" [color = "white";];
+    "CollateralTracker._getAccountMargin" -> "tokenRequired.toUint128" [color = "white";];
+    "CollateralTracker._getTotalRequiredCollateral" -> "TokenId.wrap" [color = "white";];
+    "CollateralTracker._getTotalRequiredCollateral" -> "LeftRightUnsigned.wrap" [color = "white";];
+    "CollateralTracker._getTotalRequiredCollateral" -> "LeftRightUnsigned.wrap" [color = "white";];
+    "CollateralTracker._getTotalRequiredCollateral" -> "CollateralTracker._getRequiredCollateralAtTickSinglePosition" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralAtTickSinglePosition" -> "TokenId.countLegs" [color = "white";];
+    "CollateralTracker._getRequiredCollateralAtTickSinglePosition" -> "TokenId.tokenType" [color = "white";];
+    "CollateralTracker._getRequiredCollateralAtTickSinglePosition" -> "CollateralTracker._getRequiredCollateralSingleLeg" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralSingleLeg" -> "TokenId.riskPartner" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLeg" -> "CollateralTracker._getRequiredCollateralSingleLegNoPartner" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralSingleLeg" -> "CollateralTracker._getRequiredCollateralSingleLegPartner" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "TokenId.tokenType" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "PanopticMath.getAmountsMoved" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "LeftRightUnsigned.rightSlot" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "LeftRightUnsigned.leftSlot" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "TokenId.isLong" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "CollateralTracker._getRequiredCollateralAtUtilization" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "TokenId.asTicks" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "TokenId.strike" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.getSqrtRatioAtTick" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.max24" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.getSqrtRatioAtTick" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.max24" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.mulDiv96RoundingUp" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.getSqrtRatioAtTick" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegNoPartner" -> "Math.mulDivRoundingUp" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegPartner" -> "TokenId.riskPartner" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegPartner" -> "TokenId.isLong" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegPartner" -> "TokenId.isLong" [color = "white";];
+    "CollateralTracker._getRequiredCollateralSingleLegPartner" -> "CollateralTracker._computeSpread" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralSingleLegPartner" -> "CollateralTracker._computeStrangle" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralAtUtilization" -> "CollateralTracker._sellCollateralRatio" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralAtUtilization" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker._getRequiredCollateralAtUtilization" -> "CollateralTracker._buyCollateralRatio" [color = "#1bc6a6";];
+    "CollateralTracker._getRequiredCollateralAtUtilization" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker._computeSpread" -> "PanopticMath.getAmountsMoved" [color = "white";];
+    "CollateralTracker._computeSpread" -> "PanopticMath.getAmountsMoved" [color = "white";];
+    "CollateralTracker._computeSpread" -> "LeftRightUnsigned.rightSlot" [color = "white";];
+    "CollateralTracker._computeSpread" -> "LeftRightUnsigned.leftSlot" [color = "white";];
+    "CollateralTracker._computeSpread" -> "LeftRightUnsigned.rightSlot" [color = "white";];
+    "CollateralTracker._computeSpread" -> "LeftRightUnsigned.leftSlot" [color = "white";];
+    "CollateralTracker._computeSpread" -> "TokenId.tokenType" [color = "white";];
+    "CollateralTracker._computeSpread" -> "TokenId.asset" [color = "white";];
+    "CollateralTracker._computeSpread" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker._computeSpread" -> "Math.unsafeDivRoundingUp" [color = "white";];
+    "CollateralTracker._computeSpread" -> "Math.max" [color = "white";];
+    "CollateralTracker._computeSpread" -> "CollateralTracker._getRequiredCollateralAtUtilization" [color = "#1bc6a6";];
+    "CollateralTracker._computeStrangle" -> "CollateralTracker._getRequiredCollateralSingleLegNoPartner" [color = "#1bc6a6";];
+    
+    
+    rankdir = LR;
+    node [shape = plaintext;];
+    subgraph cluster_01 {
+        label = "Legend";
+        key [label = <<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+            <tr><td align="right" port="i1">Internal Call</td></tr>
+            <tr><td align="right" port="i2">External Call</td></tr>
+            <tr><td align="right" port="i3">Defined Contract</td></tr>
+            <tr><td align="right" port="i4">Undefined Contract</td></tr>
+            </table>>;];
+        key2 [label = <<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+            <tr><td port="i1">&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td port="i2">&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td port="i3" bgcolor="#445773">&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td port="i4">
+            <table border="1" cellborder="0" cellspacing="0" cellpadding="7" color="#e8726d">
+            <tr>
+            <td></td>
+            </tr>
+            </table>
+            </td></tr>
+            </table>>;];
+        key:i1:e -> key2:i1:w [color = "#1bc6a6";];
+        key:i2:e -> key2:i2:w [color = "white";];
+    }
+}

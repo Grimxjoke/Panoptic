@@ -1,0 +1,194 @@
+digraph G {
+  graph [ ratio = "auto", page = "100", compound =true ];
+subgraph "clusterPanopticFactory" {
+  graph [ label = "PanopticFactory", color = "lightgray", style = "filled", bgcolor = "lightgray" ];
+  "PanopticFactory.<Constructor>" [ label = "<Constructor>", color = "green" ];
+  "PanopticFactory.initialize" [ label = "initialize", color = "green" ];
+  "PanopticFactory.transferOwnership" [ label = "transferOwnership", color = "blue" ];
+  "PanopticFactory.owner" [ label = "owner", color = "blue" ];
+  "PanopticFactory.uniswapV3MintCallback" [ label = "uniswapV3MintCallback", color = "blue" ];
+  "PanopticFactory.deployNewPool" [ label = "deployNewPool", color = "blue" ];
+  "PanopticFactory.minePoolAddress" [ label = "minePoolAddress", color = "blue" ];
+  "PanopticFactory._mintFullRange" [ label = "_mintFullRange" ];
+  "PanopticFactory.getPanopticPool" [ label = "getPanopticPool", color = "blue" ];
+  "PanopticFactory.address" [ label = "address" ];
+  "PanopticFactory.IUniswapV3Pool" [ label = "IUniswapV3Pool" ];
+  "PanopticFactory.PanopticPool" [ label = "PanopticPool" ];
+  "PanopticFactory.CollateralTracker" [ label = "CollateralTracker" ];
+}
+
+subgraph "clusterErrors" {
+  graph [ label = "Errors", color = "lightgray" ];
+  "Errors.NotOwner" [ label = "NotOwner" ];
+  "Errors.InvalidSalt" [ label = "InvalidSalt" ];
+  "Errors.UniswapPoolNotInitialized" [ label = "UniswapPoolNotInitialized" ];
+  "Errors.PoolAlreadyInitialized" [ label = "PoolAlreadyInitialized" ];
+}
+
+subgraph "clusterCallbackLib" {
+  graph [ label = "CallbackLib", color = "lightgray" ];
+  "CallbackLib.validateCallback" [ label = "validateCallback" ];
+  "CallbackLib.CallbackData" [ label = "CallbackData" ];
+  "CallbackLib.PoolFeatures" [ label = "PoolFeatures" ];
+}
+
+subgraph "clusterSafeTransferLib" {
+  graph [ label = "SafeTransferLib", color = "lightgray" ];
+  "SafeTransferLib.safeTransferFrom" [ label = "safeTransferFrom" ];
+}
+
+subgraph "clusterIUniswapV3Factory" {
+  graph [ label = "IUniswapV3Factory", color = "lightgray" ];
+  "IUniswapV3Factory.getPool" [ label = "getPool" ];
+}
+
+subgraph "clusterSemiFungiblePositionManager" {
+  graph [ label = "SemiFungiblePositionManager", color = "lightgray" ];
+  "SemiFungiblePositionManager.initializeAMMPool" [ label = "initializeAMMPool" ];
+}
+
+subgraph "clusterPOOL_REFERENCE" {
+  graph [ label = "POOL_REFERENCE", color = "lightgray" ];
+  "POOL_REFERENCE.cloneDeterministic" [ label = "cloneDeterministic" ];
+  "POOL_REFERENCE.predictDeterministicAddress" [ label = "predictDeterministicAddress" ];
+}
+
+subgraph "clusterClones" {
+  graph [ label = "Clones", color = "lightgray" ];
+  "Clones.clone" [ label = "clone" ];
+}
+
+subgraph "clusterCollateralTracker" {
+  graph [ label = "CollateralTracker", color = "lightgray" ];
+  "CollateralTracker.startToken" [ label = "startToken" ];
+}
+
+subgraph "clusterPanopticPool" {
+  graph [ label = "PanopticPool", color = "lightgray" ];
+  "PanopticPool.startPool" [ label = "startPool" ];
+}
+
+subgraph "clusterIUniswapV3Pool" {
+  graph [ label = "IUniswapV3Pool", color = "lightgray" ];
+  "IUniswapV3Pool.increaseObservationCardinalityNext" [ label = "increaseObservationCardinalityNext" ];
+  "IUniswapV3Pool.slot0" [ label = "slot0" ];
+  "IUniswapV3Pool.tickSpacing" [ label = "tickSpacing" ];
+}
+
+subgraph "clusterIDonorNFT" {
+  graph [ label = "IDonorNFT", color = "lightgray" ];
+  "IDonorNFT.issueNFT" [ label = "issueNFT" ];
+}
+
+subgraph "clusterPanopticMath" {
+  graph [ label = "PanopticMath", color = "lightgray" ];
+  "PanopticMath.numberOfLeadingHexZeros" [ label = "numberOfLeadingHexZeros" ];
+}
+
+subgraph "clusterMath" {
+  graph [ label = "Math", color = "lightgray" ];
+  "Math.mulDiv96RoundingUp" [ label = "mulDiv96RoundingUp" ];
+  "Math.mulDivRoundingUp" [ label = "mulDivRoundingUp" ];
+}
+
+  "PanopticFactory.transferOwnership";
+  "Errors.NotOwner";
+  "PanopticFactory.uniswapV3MintCallback";
+  "CallbackLib.validateCallback";
+  "SafeTransferLib.safeTransferFrom";
+  "PanopticFactory.deployNewPool";
+  "PanopticFactory.address";
+  "Errors.InvalidSalt";
+  "PanopticFactory.IUniswapV3Pool";
+  "IUniswapV3Factory.getPool";
+  "Errors.UniswapPoolNotInitialized";
+  "Errors.PoolAlreadyInitialized";
+  "SemiFungiblePositionManager.initializeAMMPool";
+  "PanopticFactory.PanopticPool";
+  "POOL_REFERENCE.cloneDeterministic";
+  "PanopticFactory.CollateralTracker";
+  "Clones.clone";
+  "CollateralTracker.startToken";
+  "PanopticPool.startPool";
+  "IUniswapV3Pool.increaseObservationCardinalityNext";
+  "PanopticFactory._mintFullRange";
+  "IDonorNFT.issueNFT";
+  "PanopticFactory.minePoolAddress";
+  "PanopticMath.numberOfLeadingHexZeros";
+  "POOL_REFERENCE.predictDeterministicAddress";
+  "IUniswapV3Pool.slot0";
+  "Math.mulDiv96RoundingUp";
+  "Math.mulDivRoundingUp";
+  "IUniswapV3Pool.tickSpacing";
+  "CallbackLib.CallbackData";
+  "CallbackLib.PoolFeatures";
+  "PanopticFactory.transferOwnership" -> "Errors.NotOwner" [ color = "orange" ];
+  "PanopticFactory.uniswapV3MintCallback" -> "CallbackLib.validateCallback" [ color = "orange" ];
+  "PanopticFactory.uniswapV3MintCallback" -> "SafeTransferLib.safeTransferFrom" [ color = "orange" ];
+  "PanopticFactory.uniswapV3MintCallback" -> "SafeTransferLib.safeTransferFrom" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.address" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "Errors.InvalidSalt" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.address" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "Errors.NotOwner" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.IUniswapV3Pool" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "IUniswapV3Factory.getPool" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.address" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.address" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "Errors.UniswapPoolNotInitialized" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.address" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.address" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "Errors.PoolAlreadyInitialized" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "SemiFungiblePositionManager.initializeAMMPool" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.PanopticPool" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "POOL_REFERENCE.cloneDeterministic" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.CollateralTracker" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "Clones.clone" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory.CollateralTracker" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "Clones.clone" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "CollateralTracker.startToken" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "CollateralTracker.startToken" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticPool.startPool" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "IUniswapV3Pool.increaseObservationCardinalityNext" [ color = "orange" ];
+  "PanopticFactory.deployNewPool" -> "PanopticFactory._mintFullRange" [ color = "green" ];
+  "PanopticFactory.deployNewPool" -> "IDonorNFT.issueNFT" [ color = "orange" ];
+  "PanopticFactory.minePoolAddress" -> "PanopticMath.numberOfLeadingHexZeros" [ color = "orange" ];
+  "PanopticFactory.minePoolAddress" -> "POOL_REFERENCE.predictDeterministicAddress" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "IUniswapV3Pool.slot0" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "Math.mulDiv96RoundingUp" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "Math.mulDivRoundingUp" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "Math.mulDiv96RoundingUp" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "Math.mulDivRoundingUp" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "IUniswapV3Pool.tickSpacing" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "CallbackLib.CallbackData" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "CallbackLib.PoolFeatures" [ color = "orange" ];
+  "PanopticFactory._mintFullRange" -> "PanopticFactory.IUniswapV3Pool" [ color = "green" ];
+  "PanopticFactory._mintFullRange" -> "PanopticFactory.address" [ color = "green" ];
+
+
+rankdir=LR
+node [shape=plaintext]
+subgraph cluster_01 { 
+label = "Legend";
+key [label=<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+  <tr><td align="right" port="i1">Internal Call</td></tr>
+  <tr><td align="right" port="i2">External Call</td></tr>
+  <tr><td align="right" port="i3">Defined Contract</td></tr>
+  <tr><td align="right" port="i4">Undefined Contract</td></tr>
+  </table>>]
+key2 [label=<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+  <tr><td port="i1">&nbsp;&nbsp;&nbsp;</td></tr>
+  <tr><td port="i2">&nbsp;&nbsp;&nbsp;</td></tr>
+  <tr><td port="i3" bgcolor="lightgray">&nbsp;&nbsp;&nbsp;</td></tr>
+  <tr><td port="i4">
+    <table border="1" cellborder="0" cellspacing="0" cellpadding="7" color="lightgray">
+      <tr>
+       <td></td>
+      </tr>
+     </table>
+  </td></tr>
+  </table>>]
+key:i1:e -> key2:i1:w [color="green"]
+key:i2:e -> key2:i2:w [color="orange"]
+}
+}
+
