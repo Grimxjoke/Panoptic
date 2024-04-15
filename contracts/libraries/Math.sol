@@ -10,6 +10,13 @@ import {LiquidityChunk, LiquidityChunkLibrary} from "@types/LiquidityChunk.sol";
 /// @title Core math library.
 /// @author Axicon Labs Limited
 /// @notice Contains general math helpers and functions
+/* //audit-info some major changes from previous c4-audit and this one is mentioned below
+* 1. mostSignificantNibble() & getAmountsForLiquidity()
+* 2. casting functions
+* 3. rounding up functions in "MULDIV ALGORITHMS" section
+* 4. "SORTING" section
+* so we can find something in these
+*/
 library Math {
     /// @notice This is equivalent to type(uint256).max — used in assembly blocks as a replacement.
     uint256 internal constant MAX_UINT256 = 2 ** 256 - 1;
@@ -89,6 +96,7 @@ library Math {
     /// where the least significant nibble is at index 0 and the most significant nibble is at index 40.
     /// @param x The value for which to compute the most significant nibble
     /// @return r The index of the most significant nibble (default: 0)
+    //note A nibble is a group of 4 bits. There are 40 nibbles in a 160-bit number (160 bits / 4 bits/nibble = 40 nibbles)
     function mostSignificantNibble(uint160 x) internal pure returns (uint256 r) {
         unchecked {
             if (x >= 0x100000000000000000000000000000000) {
@@ -126,6 +134,7 @@ library Math {
     /// @dev Will revert if |tick| > max tick.
     /// @param tick Value of the tick for which sqrt(1.0001^tick) is calculated
     /// @return A Q64.96 number representing the sqrt price at the provided tick
+    //note calculates the square root of a specific price ratio in a Uniswap v3 constant product pool, given a tick value.
     function getSqrtRatioAtTick(int24 tick) internal pure returns (uint160) {
         unchecked {
             uint256 absTick = tick < 0 ? uint256(-int256(tick)) : uint256(int256(tick));
@@ -165,7 +174,7 @@ library Math {
             // RealV: 0x70d869a156d2a1b890bb3df62baf27ff
             if (absTick & 0x8000 != 0) sqrtR = (sqrtR * 0x31be135f97d08fd981231505542fcfa6) >> 128;
             // RealV: 0x31be135f97d08fd981231505542fbfe8
-            if (absTick & 0x10000 != 0) sqrtR = (sqrtR * 0x9aa508b5b7a84e1c677de54f3e99bc9) >> 128;k
+            if (absTick & 0x10000 != 0) sqrtR = (sqrtR * 0x9aa508b5b7a84e1c677de54f3e99bc9) >> 128;
             // RealV: 0x9aa508b5b7a84e1c677de54f3e988fe
             if (absTick & 0x20000 != 0) sqrtR = (sqrtR * 0x5d6af8dedb81196699c329225ee604) >> 128;
             // RealV: 0x5d6af8dedb81196699c329225ed28d

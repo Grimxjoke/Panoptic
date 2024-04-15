@@ -14,6 +14,13 @@ using LeftRightLibrary for LeftRightSigned global;
 /// @title Pack two separate data (each of 128bit) into a single 256-bit slot; 256bit-to-128bit packing methods.
 /// @author Axicon Labs Limited
 /// @notice Simple data type that divides a 256-bit word into two 128-bit slots.
+/* //audit-info some major changes from previous c4-audit and this one is mentioned below
+* 1. previously they are using uint256 instead of custome LeftRightUnsigned as uint256, same goes for int256
+* 2. different implementation of torightslot function
+* 3. sub() of unsigned one was not implemented previously
+* 4. subRect() & addCapped was not implemented previously
+* so we can find something in these
+*/
 library LeftRightLibrary {
     // Used for safecasting
     using Math for uint256;
@@ -56,6 +63,7 @@ library LeftRightLibrary {
     /// @param self The 256-bit pattern to be written to
     /// @param right The value to be added to the right slot
     /// @return `self` with `right` added (not overwritten, but added) to the value in its right 128 bits
+    //todo check this function again after completing the overview
     function toRightSlot(
         LeftRightUnsigned self,
         uint128 right
@@ -65,8 +73,8 @@ library LeftRightLibrary {
             // ff + 1 = (1)00, but we want just ff + 1 = 00
             return
                 LeftRightUnsigned.wrap(
-                    (LeftRightUnsigned.unwrap(self) & LEFT_HALF_BIT_MASK) +
-                        uint256(uint128(LeftRightUnsigned.unwrap(self)) + right)
+                    (LeftRightUnsigned.unwrap(self) & LEFT_HALF_BIT_MASK) +//note This ensures that the existing data in the left slot remains untouched.
+                        uint256(uint128(LeftRightUnsigned.unwrap(self)) + right)//note the sum of the existing value and input in the right slot
                 );
         }
     }
@@ -83,6 +91,11 @@ library LeftRightLibrary {
         unchecked {
             // prevent the right slot from leaking into the left one in the case of a positive sign change
             // ff + 1 = (1)00, but we want just ff + 1 = 00
+            /* explaination
+            * ff represents the maximum unsigned 128-bit value (11111111_11111111).
+            * Adding 1 to ff would result in a 129-bit binary number (1 followed by all zeros).
+            * Addition: uint256(uint128(LeftRightUnsigned.unwrap(self)) + right) = uint256(0xFF + 1) = 0x100 (overflow happens here, but it's a 128-bit operation)
+            */
             return
                 LeftRightSigned.wrap(
                     (LeftRightSigned.unwrap(self) & LEFT_HALF_BIT_MASK_INT) +
@@ -191,6 +204,7 @@ library LeftRightLibrary {
     /// @param x The augend
     /// @param y The addend
     /// @return z The sum `x + y`
+    //todo check this later
     function add(LeftRightUnsigned x, LeftRightSigned y) internal pure returns (LeftRightSigned z) {
         unchecked {
             int256 left = int256(uint256(x.leftSlot())) + y.leftSlot();

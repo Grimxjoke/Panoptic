@@ -9,6 +9,7 @@ import {Errors} from "@libraries/Errors.sol";
 /// @title Library for verifying and decoding Uniswap callbacks.
 /// @author Axicon Labs Limited
 /// @notice This library provides functions to verify that a callback came from a canonical Uniswap V3 pool with a claimed set of features.
+//todo check the test file after knowing where this contract is used
 library CallbackLib {
     /// @notice Defining characteristics of a Uni V3 pool
     struct PoolFeatures {
@@ -27,6 +28,7 @@ library CallbackLib {
     /// @param sender The address initiating the callback and claiming to be a Uniswap pool
     /// @param factory The address of the canonical Uniswap V3 factory
     /// @param features The features `sender` claims to contain (tokens and fee)
+    //todo didn't get the usecase yet have to check it's usecase
     function validateCallback(
         address sender,
         IUniswapV3Factory factory,

@@ -13,9 +13,11 @@ import {LeftRightUnsigned, LeftRightSigned} from "@types/LeftRight.sol";
 import {LiquidityChunk} from "@types/LiquidityChunk.sol";
 import {TokenId} from "@types/TokenId.sol";
 
-
 /// @title Compute general math quantities relevant to Panoptic and AMM pool management.
 /// @author Axicon Labs Limited
+/* //audit-info some major changes from previous c4-audit and this one is mentioned below
+*  Probably need to look into every thing because the previous implementation contains only 200 line and this file contains over 900 lines
+*/
 library PanopticMath {
     // Used for safecasting
     using Math for uint256;
@@ -57,7 +59,8 @@ library PanopticMath {
     /// @notice Increments the pool pattern (first 48 bits) of a poolId by 1.
     /// @param poolId The 64-bit pool ID
     /// @return The provided `poolId` with its pool pattern slot incremented by 1
-    //note What the Pool Patern ? 
+    //note why incrementing it with 1, what is the use case of this
+    //note What the Pool Patern ?
     function incrementPoolPattern(uint64 poolId) internal pure returns (uint64) {
         unchecked {
             // increment
@@ -74,7 +77,7 @@ library PanopticMath {
     ///
     /// @param addr The address to get the number of leading zero hex characters for
     /// @return The number of leading zero hex characters in the address
-    //note What do we care ? 
+    //note What do we care ?
     function numberOfLeadingHexZeros(address addr) external pure returns (uint256) {
         unchecked {
             return addr == address(0) ? 40 : 39 - Math.mostSignificantNibble(uint160(addr));
@@ -84,6 +87,7 @@ library PanopticMath {
     /*//////////////////////////////////////////////////////////////
                           ORACLE CALCULATIONS
     //////////////////////////////////////////////////////////////*/
+    //todo come into this section after uniswapv3book
 
     /// @notice Update an existing account's "positions hash" with a new single position `tokenId`.
     /// @notice The positions hash contains a single fingerprint of all positions created by an account/user as well as a tally of the positions.
@@ -92,7 +96,7 @@ library PanopticMath {
     /// @param tokenId The new position to add to the existing hash: existingHash = uint248(existingHash) ^ hashOf(tokenId)
     /// @param addFlag Whether to mint (add) the tokenId to the count of positions or burn (subtract) it from the count (existingHash >> 248) +/- 1
     /// @return newHash The new positionHash with the updated hash
-    //note Updating the TokenId then, When a new leg is add ? Or in a Roll event ? 
+    //note Updating the TokenId then, When a new leg is add ? Or in a Roll event ?
     function updatePositionsHash(
         uint256 existingHash,
         TokenId tokenId,
@@ -126,7 +130,8 @@ library PanopticMath {
     /// @param cardinality The number of `periods` to in the median price array, should be odd.
     /// @param period The number of observations to average to compute one entry in the median price array
     /// @return The median of `cardinality` observations spaced by `period` in the Uniswap pool
-    //note  What's that ? 
+    //note  What's that ?
+    //note calculates a manipulation-resistant Time-Weighted Average Price (TWAP) for a Uniswap v3 pool
     function computeMedianObservedPrice(
         IUniswapV3Pool univ3pool,
         uint256 observationIndex,
@@ -170,6 +175,7 @@ library PanopticMath {
     /// @param univ3pool The Uniswap pool to retrieve observations from
     /// @return medianTick The median of the provided 7-slot ring buffer of ticks in `medianData`
     /// @return updatedMedianData The updated 7-slot ring buffer of ticks with the latest observation inserted if the last entry is at least `period` seconds old (returns 0 otherwise)
+    //note manages a specialized data structure called a "sorted 7-slot ring buffer" to efficiently track and calculate the median tick value in a Uniswap v3 pool.
     function computeInternalMedian(
         uint256 observationIndex,
         uint256 observationCardinality,
@@ -492,7 +498,7 @@ library PanopticMath {
     /// @param amount The amount of token0 to convert into token1
     /// @param sqrtPriceX96 The square root of the price at which to convert `amount` of token0 into token1
     /// @return The converted `amount` of token0 represented in terms of token1
-    //audit-info Could it be vulnerable to Market Manipulation ? 
+    //audit-info Could it be vulnerable to Market Manipulation ?
     function convert0to1(uint256 amount, uint160 sqrtPriceX96) internal pure returns (uint256) {
         unchecked {
             // the tick 443636 is the maximum price where (price) * 2**192 fits into a uint256 (< 2**256-1)
@@ -527,7 +533,7 @@ library PanopticMath {
     /// @param amount The amount of token0 to convert into token1
     /// @param sqrtPriceX96 The square root of the price at which to convert `amount` of token0 into token1
     /// @return The converted `amount` of token0 represented in terms of token1
-    //note Why using int256 ? 
+    //note Why using int256 ?
     function convert0to1(int256 amount, uint160 sqrtPriceX96) internal pure returns (int256) {
         unchecked {
             // the tick 443636 is the maximum price where (price) * 2**192 fits into a uint256 (< 2**256-1)
