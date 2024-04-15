@@ -290,6 +290,8 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param collateralTracker1 Interface for collateral token1.
 
     //audit-info Is is possible to DOS many pair by provinding random pool address ? 
+    //audit front running, someone can provide a uniswpe like pool address and manipulate the twap and other integrations, unless it is meant to be permissionless and anyone can launch a pool
+    // the protocol should have the uniswap factory address provided and validate that the provided pool address is indeed a uniswap one
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,
@@ -1374,6 +1376,10 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param account The owner of the incoming list of positions.
     /// @param positionIdList The existing list of active options for the owner.
     /// @param offset Changes depending on whether this is a new mint or a liquidation (=1 if new mint, 0 if liquidation).
+
+    //audit what if the liquidator provides a sublist of the total positions open by a trader? tha hashes don't like they would match. 
+    // If the liquidator must provide the full list of positions open by a trader then there is a DOS risk as the trader can open many positions with minimum investment. 
+    
     function _validatePositionList(
         address account,
         TokenId[] calldata positionIdList,
@@ -1389,6 +1395,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         // Check that position hash (the fingerprint of option positions) matches the one stored for the '_account'
         uint256 fingerprintIncomingList;
 
+        
         for (uint256 i = 0; i < pLength; ) {
             fingerprintIncomingList = PanopticMath.updatePositionsHash(
                 fingerprintIncomingList,
