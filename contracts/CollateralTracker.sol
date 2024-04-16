@@ -222,7 +222,10 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param token1 token 1 of the Uniswap pool.
     /// @param fee the fee of the Uniswap pool.
     /// @param panopticPool the address of the Panoptic Pool being created and linked to this Collateral Tracker.
-    //note So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ? 
+    
+    //note @Paul So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ? 
+    //audit-ok @Paul 2 of them Actually
+    //audit-ok Being called by PanotpicFactory when contract deployement 
     function startToken(
         bool underlyingIsToken0,
         address token0,
@@ -409,6 +412,11 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         unchecked {
             shares = Math.mulDiv(
                 //audit Weird To subbstact Decimals and Commision fees  
+                //note COMMISSION_FEE is set to "10" in tests
+                //note DECIMALS is motly like to be 18. Other 
+                //audit If DECIMALS < COMMISSION_FEE it will revert. 
+                //audit If DECIMALS == COMMISSION_FEE it will return 0. 
+
                 assets * (DECIMALS - COMMISSION_FEE),
                 totalSupply,
                 totalAssets() * DECIMALS
@@ -476,6 +484,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         }
     }
 
+    //note What's the diff with the deposit function ?
     /// @notice Deposit required amount of assets to receive specified amount of shares.
     /// There is a maximum asset deposit limit of (2 ** 104) - 1.
     /// An MEV tax is levied, which is equal to a single payment of the commissionRate BEFORE adding the funds.
@@ -1502,7 +1511,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         } else if (isLong == 1) {
             // if options is long, use buy collateral ratio
             // compute the buy collateral ratio, which depends on the pool utilization
-            uint256 buyCollateral = _buyCollateralRatio(uint256(utilization));
+            uint256 buyCollateral = _sellCollateralRatio(uint256(utilization));
 
             // compute required as amount*collateralRatio
             // can use unsafe because denominator is always nonzero

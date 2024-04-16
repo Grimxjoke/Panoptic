@@ -218,6 +218,7 @@ contract PanopticFactory is Multicall {
         (token0, token1) = token0 < token1 ? (token0, token1) : (token1, token0);
 
         // frontrunning protection for mined pool addresses
+        //audit anybody can call a salt that will pass this check
         if (address(bytes20(salt)) != msg.sender) revert Errors.InvalidSalt();
 
         // restrict pool deployment to owner if contract has not been made permissionless

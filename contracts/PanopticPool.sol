@@ -25,6 +25,16 @@ import {TokenId} from "@types/TokenId.sol";
 /// @notice Manages positions, collateral, liquidations and forced exercises.
 /// @dev All liquidity deployed to/from the AMM is owned by this smart contract.
 contract PanopticPool is ERC1155Holder, Multicall {
+
+      // slot0 returns(
+        //     uint160 sqrtPriceX96,
+        //     int24 tick,
+        //     uint16 observationIndex,
+        //     uint16 observationCardinality,
+        //     uint16 observationCardinalityNext,
+        //     uint8 feeProtocol,
+        //     bool unlocked
+        // );
     /*//////////////////////////////////////////////////////////////
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -303,6 +313,15 @@ contract PanopticPool is ERC1155Holder, Multicall {
         s_univ3pool = IUniswapV3Pool(_univ3pool);
 
         (, int24 currentTick, , , , , ) = IUniswapV3Pool(_univ3pool).slot0();
+          // slot0 returns(
+        //     uint160 sqrtPriceX96,
+        //     int24 tick,
+        //     uint16 observationIndex,
+        //     uint16 observationCardinality,
+        //     uint16 observationCardinalityNext,
+        //     uint8 feeProtocol,
+        //     bool unlocked
+        // );
 
         // Store the median data
         unchecked {
@@ -338,6 +357,15 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param sqrtUpperBound The upper bound of the acceptable open interval for `currentSqrtPriceX96`
     function assertPriceWithinBounds(uint160 sqrtLowerBound, uint160 sqrtUpperBound) external view {
         (uint160 currentSqrtPriceX96, , , , , , ) = s_univ3pool.slot0();
+        // slot0 returns(
+        //     uint160 sqrtPriceX96,
+        //     int24 tick,
+        //     uint16 observationIndex,
+        //     uint16 observationCardinality,
+        //     uint16 observationCardinalityNext,
+        //     uint8 feeProtocol,
+        //     bool unlocked
+        // );
 
         if (currentSqrtPriceX96 <= sqrtLowerBound || currentSqrtPriceX96 >= sqrtUpperBound) {
             revert Errors.PriceBoundFail();
