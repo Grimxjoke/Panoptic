@@ -666,7 +666,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param positionBalance The balance in `account` of the position to be exercised
     /// @param longAmounts The amount of longs in the position.
     /// @return exerciseFees The fees for exercising the option position.
-    //audit-info Crutial method imo
+    //audit-info @paul Crutial method imo
     function exerciseCost(
         int24 currentTick,
         int24 oracleTick,
@@ -1179,6 +1179,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param premiumAllPositions the premium collected thus far across all positions.
     /// @return tokenData information collected for the tokens about the health of the account.
     /// The collateral balance of the user is in the right slot and the threshold for margin call is in the left slot.
+    //audit @paul Up the the Caller to decide if the user Collateral is enought or not
     function _getAccountMargin(
         address user,
         int24 atTick,
@@ -1218,8 +1219,13 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Get the total required amount of collateral tokens of a user/account across all active positions to stay above the margin requirement.
     /// @dev Returns the token amounts required for the entire account with active positions in 'positionIdList' (list of tokenIds).
     /// @param atTick Tick to convert values at. This can be the current tick or the Uniswap pool TWAP tick.
+
+    //audit-info @paul It's a dynamic array. Each new element is another array of two elements.
+    // Example [[1, 2], [3, 4]]
     /// @param positionBalanceArray The list of all historical positions held by the 'optionOwner', stored as [[tokenId, balance/poolUtilizationAtMint], ...].
     /// @return tokenRequired The amount of tokens required to stay above the margin threshold for all active positions of user.
+
+    //audit-info @paul Get the Collateral Requirement for Open Positions 
     function _getTotalRequiredCollateral(
         int24 atTick,
         uint256[2][] memory positionBalanceArray
@@ -1230,6 +1236,9 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         uint256 totalIterations = positionBalanceArray.length;
         for (uint256 i = 0; i < totalIterations; ) {
             // read the ith tokenId from the account
+
+            //audit-info @paul The i element looks like this : [tokenId  , poolUtilization + positionSize]
+            //                                                 [1 element, uint128         + uint128     ] 
             TokenId tokenId = TokenId.wrap(positionBalanceArray[i][0]);
 
             // read the position size and the pool utilization at mint
@@ -1298,6 +1307,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param atTick Tick to convert values at. This can be the current tick or the Uniswap pool TWAP tick.
     /// @param poolUtilization The pool utilization: how much funds are in the Panoptic pool versus the AMM pool.
     /// @return required The required amount collateral needed for this leg 'index'.
+
+    //audit-info @paul What's a Risk Partner
     function _getRequiredCollateralSingleLeg(
         TokenId tokenId,
         uint256 index,

@@ -299,12 +299,9 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param collateralTracker0 Interface for collateral token0.
     /// @param collateralTracker1 Interface for collateral token1.
 
-<<<<<<< HEAD
     //audit-info Is is possible to DOS many pair by provinding random pool address ? 
     //audit front running, someone can provide a uniswpe like pool address and manipulate the twap and other integrations, unless it is meant to be permissionless and anyone can launch a pool
     // the protocol should have the uniswap factory address provided and validate that the provided pool address is indeed a uniswap one
-=======
->>>>>>> refs/remotes/origin/main
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,
@@ -1498,6 +1495,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
     /// @notice Compute the TWAP price from the last 600s = 10mins.
     /// @return twapTick The TWAP price in ticks.
+    //audit-info Does this return the price of the asset or the closest Tick Price, slighlty differents
     function getUniV3TWAP() internal view returns (int24 twapTick) {
         twapTick = PanopticMath.twapFilter(s_univ3pool, TWAP_WINDOW);
     }
