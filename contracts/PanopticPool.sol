@@ -291,8 +291,6 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
 <<<<<<< HEAD
     //audit-info Is is possible to DOS many pair by provinding random pool address ? 
-    //audit front running, someone can provide a uniswpe like pool address and manipulate the twap and other integrations, unless it is meant to be permissionless and anyone can launch a pool
-    // the protocol should have the uniswap factory address provided and validate that the provided pool address is indeed a uniswap one
 =======
 >>>>>>> refs/remotes/origin/main
     function startPool(

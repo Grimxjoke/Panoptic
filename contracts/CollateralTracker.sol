@@ -1007,6 +1007,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param shortAmount The amount of shorts.
     /// @param swappedAmount The amount of tokens swapped during creation of the option position (non-zero for options minted ITM).
     /// @return utilization The utilization of the Panoptic Pool.
+    //checked  @Mody
     function takeCommissionAddData(
         address optionOwner,
         int128 longAmount,
@@ -1109,6 +1110,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param shortAmount The amount of short options held.
     /// @param swappedAmount The (potential) amount swapped during any ITM option creations.
     /// @return exchangedAmount The amount of funds to be exchanged for minting an option (includes commission, swapFee, and intrinsic value).
+    //checked  @Mody
     function _getExchangedAmount(
         int128 longAmount,
         int128 shortAmount,
