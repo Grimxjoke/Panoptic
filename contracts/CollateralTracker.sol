@@ -223,6 +223,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param fee the fee of the Uniswap pool.
     /// @param panopticPool the address of the Panoptic Pool being created and linked to this Collateral Tracker.
     //note So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ? 
+    // aduit front running? a clone of panoptic pool can be deployed and passed here
     function startToken(
         bool underlyingIsToken0,
         address token0,
@@ -326,6 +327,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// Requirements:
     /// - the caller must have a balance of at least 'amount'.
     /// - the msg.sender must not have any position on the panoptic pool
+    //audit-info Depends on s_poanopticPool, if it can be manipulated form a different part in the system then the user can become under collateralized
     function transfer(
         address recipient,
         uint256 amount
