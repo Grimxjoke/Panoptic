@@ -23,7 +23,6 @@ import {TokenId} from "@types/TokenId.sol";
 //
 /// @notice Tracks collateral of users which is key to ensure the correct level of collateralization is achieved.
 /// This is represented as an ERC20 share token. A Panoptic pool has 2 tokens, each issued by its own instance of a CollateralTracker.
-//note 2 tokens? is it talking about token0 and token1 of pool.
 /// All math within this contract pertains to a single token.
 //
 /// @notice This contract uses the ERC4626 standard allowing the minting and burning of "shares" (represented using ERC20 inheritance) in exchange for underlying "assets".
@@ -226,8 +225,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     //note @Paul So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ?
     //audit-ok @Paul 2 of them Actually
     //audit-ok @Paul Being called by PanotpicFactory when contract deployement
-    //note @Paul So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ?
-    //audit @Mody front running? a clone of panoptic pool can be deployed and passed here
+    //note @Paul So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ? -> @ayush yes
+    //audit @Mody front running? a clone of panoptic pool can be deployed and passed here -> @ayush have to remove this tag
     function startToken(
         bool underlyingIsToken0,
         address token0,
@@ -318,7 +317,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
 
     /// @notice Returns decimals of underlying token (0 if not present)
     /// @return decimals The decimals of the token.
-    //audit-info what happens if return 0 because if underlyingToken doesn't support metadata it will return 0
+    //audit-info what happens if return 0, because we know that if underlyingToken doesn't support metadata it will return 0
     function decimals() external view returns (uint8) {
         // this logic requires multiple external calls and error handling, so we do it in a delegatecall to a library to save bytecode size
         return InteractionHelper.computeDecimals(s_underlyingToken);
@@ -428,9 +427,10 @@ contract CollateralTracker is ERC20Minimal, Multicall {
                 //audit Weird To subbstact Decimals and Commision fees
                 //note COMMISSION_FEE is set to "10" in tests
                 //note DECIMALS is motly like to be 18. Other
+                //note @ayush here DECIMALS variable is misleading actuall what DECIMALS represent is 10_000 (100%)
                 //audit If DECIMALS < COMMISSION_FEE it will revert.
                 //audit If DECIMALS == COMMISSION_FEE it will return 0.
-                //note i don't think it's weird. see if we mul assets*commission_fee it will give us commission charge
+                //note @ayush i don't think it's weird. see if we mul assets*commission_fee it will give us commission charge
                 //     but if we want to get no. of assets after taking out charges we need to do this assets*(100%-commission%)
                 //     same apply to why mul totalAsset*Decimal because we have mul it with assets so we need to devide it
                 //     vault deduct a one-time fee upfront before calculating the number of shares to be minted.
@@ -508,6 +508,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     }
 
     //note What's the diff with the deposit function ?
+    //note @ayush in deposit you pass underlying asset whereas in mint you pass no. of shares
     /// @notice Deposit required amount of assets to receive specified amount of shares.
     /// There is a maximum asset deposit limit of (2 ** 104) - 1.
     /// An MEV tax is levied, which is equal to a single payment of the commissionRate BEFORE adding the funds.
@@ -572,7 +573,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param receiver User to receive the assets.
     /// @param owner User to burn the shares from.
     /// @return shares The amount of shares burned to withdraw the desired amount of assets.
-    //audit It seems that the fees generate are not calculated here//note ig it might be related to redeem function (check out gemini)
+    //audit It seems that the fees generate are not calculated here
+    //audit-info @ayush can't find about it ig i will take a look at it after Panoptic Pool
     function withdraw(
         uint256 assets,
         address receiver,
