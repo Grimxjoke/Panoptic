@@ -313,6 +313,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
 
     /// @notice Returns decimals of underlying token (0 if not present)
     /// @return decimals The decimals of the token.
+    //audit-info what happens if return 0 because if underlyingToken doesn't support metadata it will return 0
     function decimals() external view returns (uint8) {
         // this logic requires multiple external calls and error handling, so we do it in a delegatecall to a library to save bytecode size
         return InteractionHelper.computeDecimals(s_underlyingToken);
@@ -362,9 +363,9 @@ contract CollateralTracker is ERC20Minimal, Multicall {
                      STANDARD ERC4626 INTERFACE
     //////////////////////////////////////////////////////////////*/
 
-    //todo comeback to this part after some ERC4626 security or implementation knowledge
     /// @notice Get the token contract address of the underlying asset being managed.
     /// @return assetTokenAddress The address of the underlying asset.
+    //audit-ok @ayush
     function asset() external view returns (address assetTokenAddress) {
         return s_underlyingToken;
     }
@@ -372,8 +373,11 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Get the total amount of assets managed by the CollateralTracker vault.
     /// @dev This returns the total tracked assets in the AMM and PanopticPool,
     /// @dev - EXCLUDING the amount of collected fees (because they are reserved for short options)
+    //audit-info then where does collected fees are calculated
     /// @dev - EXCLUDING any donations that have been made to the pool
+    //audit-info how can we make donations and where does donations are calculated
     /// @return totalManagedAssets The total amount of assets managed.
+    //audit-ok @ayush
     function totalAssets() public view returns (uint256 totalManagedAssets) {
         unchecked {
             return s_poolAssets + s_inAMM;
@@ -383,6 +387,9 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Returns the amount of shares that can be minted for the given amount of assets.
     /// @param assets The amount of assets to be deposited.
     /// @return shares The amount of shares that can be minted.
+    /*  //Note MulDiv-> assets * totalSupply / totalAssets();
+        totalAsset() -> s_poolAssets + s_inAMM -> 1 (initially set to) + s_inAMM ( calculated in exercise function) -> min=1 ( not 0 ) */
+    //audit-ok @ayush(except math part of mulDiv)
     function convertToShares(uint256 assets) public view returns (uint256 shares) {
         return Math.mulDiv(assets, totalSupply, totalAssets());
     }
@@ -390,12 +397,14 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Returns the amount of assets that can be redeemed for the given amount of shares.
     /// @param shares The amount of shares to be redeemed.
     /// @return assets The amount of assets that can be redeemed.
+    //audit-ok @ayush
     function convertToAssets(uint256 shares) public view returns (uint256 assets) {
         return Math.mulDiv(shares, totalAssets(), totalSupply);
     }
 
     /// @notice returns The maximum deposit amount.
     /// @return maxAssets The maximum amount of assets that can be deposited.
+    //audit-ok @ayush
     function maxDeposit(address) external pure returns (uint256 maxAssets) {
         return type(uint104).max;
     }
@@ -403,12 +412,17 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Returns shares received for depositing given amount of assets.
     /// @param assets The amount of assets to be deposited.
     /// @return shares The amount of shares that can be minted.
+    //audit-ok @ayush
     function previewDeposit(uint256 assets) public view returns (uint256 shares) {
         // compute the MEV tax, which is equal to a single payment of the commissionRate on the FINAL (post mev-tax) assets paid
         //note why this comment is introducing MEV tax in this funciton
         unchecked {
             shares = Math.mulDiv(
-                //audit Weird To subbstact Decimals and Commision fees  
+                //audit Weird To subbstact Decimals and Commision fees
+                //note i don't think it's weird. see if we mul assets*commission_fee it will give us commission charge
+                //     but if we want to get no. of assets after taking out charges we need to do this assets*(100%-commission%)
+                //     same apply to why mul totalAsset*Decimal because we have mul it with assets so we need to devide it
+                //     vault deduct a one-time fee upfront before calculating the number of shares to be minted.
                 assets * (DECIMALS - COMMISSION_FEE),
                 totalSupply,
                 totalAssets() * DECIMALS
@@ -423,6 +437,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param assets Amount of assets deposited.
     /// @param receiver User to receive the shares.
     /// @return shares The amount of Panoptic pool shares that were minted to the recipient.
+    //note so even if you have to deposit assets you need to pay commission fee before adding the funds
+    //audit-ok @ayush
     function deposit(uint256 assets, address receiver) external returns (uint256 shares) {
         if (assets > type(uint104).max) revert Errors.DepositTooLarge();
 
@@ -430,6 +446,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
 
         // transfer assets (underlying token funds) from the user/the LP to the PanopticPool
         // in return for the shares to be minted
+        //todo @Paul ask about the audit-info tag from safTransferFrom()
         SafeTransferLib.safeTransferFrom(
             s_underlyingToken,
             msg.sender,
@@ -450,6 +467,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
 
     /// @notice Returns the maximum shares received for a deposit.
     /// @return maxShares The maximum amount of shares that can be minted.
+    //audit-ok @ayush
     function maxMint(address) external view returns (uint256 maxShares) {
         unchecked {
             return (convertToShares(type(uint104).max) * DECIMALS) / (DECIMALS + COMMISSION_FEE);
@@ -459,6 +477,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Returns the amount of assets that would be deposited to mint a given amount of shares.
     /// @param shares The amount of shares to be minted.
     /// @return assets The amount of assets that would be deposited.
+    //audit-ok @ayush
     function previewMint(uint256 shares) public view returns (uint256 assets) {
         // round up depositing assets to avoid protocol loss
         // This prevents minting of shares where the assets provided is rounded down to zero
@@ -467,6 +486,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         // finalAssets - commissionRate * finalAssets = convertedAssets
         // finalAssets * (1 - commissionRate) = convertedAssets
         // finalAssets = convertedAssets / (1 - commissionRate)
+        //todo -> have some doubt in maths part here (probably going to be alright)
         unchecked {
             assets = Math.mulDivRoundingUp(
                 shares * DECIMALS,
@@ -483,6 +503,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param shares Amount of shares to be minted.
     /// @param receiver User to receive the shares.
     /// @return assets The amount of assets deposited to mint the desired amount of shares.
+    //audit-ok @ayush
     function mint(uint256 shares, address receiver) external returns (uint256 assets) {
         assets = previewMint(shares);
 
@@ -513,6 +534,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @dev Calculated from the balance of the user; limited by the assets the pool has available.
     /// @param owner The address being withdrawn for.
     /// @return maxAssets The maximum amount of assets that can be withdrawn.
+    //audit-ok @ayush
     function maxWithdraw(address owner) public view returns (uint256 maxAssets) {
         // We can only use the standard 4626 withdraw function if the user has no open positions
         // For the sake of simplicity assets can only be withdrawn through the redeem function
@@ -524,9 +546,10 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Returns the amount of shares that would be burned to withdraw a given amount of assets.
     /// @param assets The amount of assets to be withdrawn.
     /// @return shares The amount of shares that would be burned.
+    //audit-ok @ayush
     function previewWithdraw(uint256 assets) public view returns (uint256 shares) {
         uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
+        //note same as convertToShares()
         return Math.mulDivRoundingUp(assets, supply, totalAssets());
     }
 
@@ -537,7 +560,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param receiver User to receive the assets.
     /// @param owner User to burn the shares from.
     /// @return shares The amount of shares burned to withdraw the desired amount of assets.
-    //audit It seems that the fees generate are not calculated here
+    //audit It seems that the fees generate are not calculated here//note ig it might be related to redeem function (check out gemini)
     function withdraw(
         uint256 assets,
         address receiver,
@@ -579,6 +602,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// If the user has any open positions, the max redeemable balance is zero.
     /// @param owner The redeeming address.
     /// @return maxShares The maximum amount of shares that can be redeemed.
+    //audit-ok @ayush
     function maxRedeem(address owner) public view returns (uint256 maxShares) {
         uint256 available = convertToShares(s_poolAssets);
         uint256 balance = balanceOf[owner];
@@ -588,6 +612,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice returns the amount of assets resulting from a given amount of shares being redeemed
     /// @param shares the amount of shares to be redeemed
     /// @return assets the amount of assets resulting from the redemption
+    //audit-ok @ayush
     function previewRedeem(uint256 shares) public view returns (uint256 assets) {
         return convertToAssets(shares);
     }
@@ -598,6 +623,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param receiver User to receive the assets
     /// @param owner User to burn the shares from
     /// @return assets the amount of assets resulting from the redemption
+    //audit-ok @ayush
     function redeem(
         uint256 shares,
         address receiver,
@@ -872,6 +898,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param delegator The delegator to send shares from - the sender of the shares.
     /// @param delegatee The delegatee to send shares to - the recipient of the shares.
     /// @param assets The assets to which the shares delegated correspond.
+    //audit-info why not checking parameter like is that amount of share available in delegator balance or not
+    //           ig have to check it on PanopticPool contract
     function delegate(
         address delegator,
         address delegatee,
@@ -902,7 +930,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @dev mints ghost shares so a position can be settled - the total supply is not affected.
     /// @param delegatee The delegatee to send shares to - the recipient of the shares.
     /// @param assets The assets to which the shares delegated correspond.
-    //audit-info User get some new Shares 
+    //audit-info User get some new Shares
+    //todo not affecting total supply? have to check this part
     function delegate(address delegatee, uint256 assets) external onlyPanopticPool {
         balanceOf[delegatee] += convertToShares(assets);
     }
@@ -912,7 +941,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @dev burns ghost shares after a position has been settled - the total supply is not affected.
     /// @param delegatee The account refunding tokens to 'delegatee'.
     /// @param assets The amount of assets to which the shares to refund to the protocol correspond.
-    //audit-info User loss some Shares 
+    //audit-info User loss some Shares
+    //audit-info ghost shares? i don't know why but the delegate and refund function uses might create problem when combine multiple things
     function refund(address delegatee, uint256 assets) external onlyPanopticPool {
         balanceOf[delegatee] -= convertToShares(assets);
     }
@@ -921,6 +951,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param delegator The delegator to send shares *to* (because we are revoking - opposite when we delegate).
     /// @param delegatee The delegatee to send shares *from* (because we are revoking - opposite when we delegate).
     /// @param assets The assets to which the shares revoked correspond.
+    //audit-info have to see how it is used in PanopticPool to decide wheather this function is okay or not
     function revoke(
         address delegator,
         address delegatee,
@@ -982,9 +1013,11 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Refunds delegated tokens to 'refunder' from 'refundee', similar to 'revoke'
     /// @dev Assumes that the refunder has enough money to pay for the refund
     /// @dev can handle negative refund amounts that go from refundee to refunder in the case of high exercise fees.
+    //todo might want to check on negative refund later
     /// @param refunder The account refunding tokens to 'refundee'.
     /// @param refundee The account being refunded to.
     /// @param assets The amount of assets to refund. Positive means a transfer from refunder to refundee, vice versa for negative.
+    //audit-ok @ayush
     function refund(address refunder, address refundee, int256 assets) external onlyPanopticPool {
         if (assets > 0) {
             _transferFrom(refunder, refundee, convertToShares(uint256(assets)));

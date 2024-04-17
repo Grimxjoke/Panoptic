@@ -40,7 +40,11 @@ library SafeTransferLib {
                 // We use 100 because that's the total length of our calldata (4 + 32 * 3)
                 // Counterintuitively, this call() must be positioned after the or() in the
                 // surrounding and() because and() evaluates its arguments from right to left.
-                //audit-info Here's 100 instead of 68 in the Original file. Why ? 
+                //audit-info Here's 100 instead of 68 in the Original file. Why ?
+                //note which orignal documen are you talking about
+                //      i this 100 should is right value , let's see bytes calculation->
+                //      4(function selector) + 32(from) + 32(to) + 32(amount) = 100 bytes
+                    //gas address value argsOffset argsSize retOffset retSize
                 call(gas(), token, 0, p, 100, 0, 32)
             )
         }

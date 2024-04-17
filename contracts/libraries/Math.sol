@@ -347,6 +347,7 @@ library Math {
     /// @param denominator The divisor
     /// @return result The 256-bit result
     /// @dev Credit to Remco Bloemen under MIT license https://xn--2-umb.com/21/muldiv
+    //note Every logic is from openzeppelin, the only difference is openzeppeline uses solidity and assembly both but this one focus more on assembly
     function mulDiv(
         uint256 a,
         uint256 b,
