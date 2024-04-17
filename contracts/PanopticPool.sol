@@ -25,6 +25,16 @@ import {TokenId} from "@types/TokenId.sol";
 /// @notice Manages positions, collateral, liquidations and forced exercises.
 /// @dev All liquidity deployed to/from the AMM is owned by this smart contract.
 contract PanopticPool is ERC1155Holder, Multicall {
+
+      // slot0 returns(
+        //     uint160 sqrtPriceX96,
+        //     int24 tick,
+        //     uint16 observationIndex,
+        //     uint16 observationCardinality,
+        //     uint16 observationCardinalityNext,
+        //     uint8 feeProtocol,
+        //     bool unlocked
+        // );
     /*//////////////////////////////////////////////////////////////
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -289,11 +299,13 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param collateralTracker0 Interface for collateral token0.
     /// @param collateralTracker1 Interface for collateral token1.
 
-<<<<<<< HEAD
     //audit-info Is is possible to DOS many pair by provinding random pool address ? 
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/main
+=======
     //audit front running, someone can provide a uniswpe like pool address and manipulate the twap and other integrations, unless it is meant to be permissionless and anyone can launch a pool
     // the protocol should have the uniswap factory address provided and validate that the provided pool address is indeed a uniswap one
-=======
 >>>>>>> refs/remotes/origin/main
     function startPool(
         IUniswapV3Pool _univ3pool,
@@ -309,6 +321,15 @@ contract PanopticPool is ERC1155Holder, Multicall {
         s_univ3pool = IUniswapV3Pool(_univ3pool);
 
         (, int24 currentTick, , , , , ) = IUniswapV3Pool(_univ3pool).slot0();
+          // slot0 returns(
+        //     uint160 sqrtPriceX96,
+        //     int24 tick,
+        //     uint16 observationIndex,
+        //     uint16 observationCardinality,
+        //     uint16 observationCardinalityNext,
+        //     uint8 feeProtocol,
+        //     bool unlocked
+        // );
 
         // Store the median data
         unchecked {
@@ -344,6 +365,15 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param sqrtUpperBound The upper bound of the acceptable open interval for `currentSqrtPriceX96`
     function assertPriceWithinBounds(uint160 sqrtLowerBound, uint160 sqrtUpperBound) external view {
         (uint160 currentSqrtPriceX96, , , , , , ) = s_univ3pool.slot0();
+        // slot0 returns(
+        //     uint160 sqrtPriceX96,
+        //     int24 tick,
+        //     uint16 observationIndex,
+        //     uint16 observationCardinality,
+        //     uint16 observationCardinalityNext,
+        //     uint8 feeProtocol,
+        //     bool unlocked
+        // );
 
         if (currentSqrtPriceX96 <= sqrtLowerBound || currentSqrtPriceX96 >= sqrtUpperBound) {
             revert Errors.PriceBoundFail();
@@ -1470,6 +1500,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
     /// @notice Compute the TWAP price from the last 600s = 10mins.
     /// @return twapTick The TWAP price in ticks.
+    //audit-info Does this return the price of the asset or the closest Tick Price, slighlty differents
     function getUniV3TWAP() internal view returns (int24 twapTick) {
         twapTick = PanopticMath.twapFilter(s_univ3pool, TWAP_WINDOW);
     }

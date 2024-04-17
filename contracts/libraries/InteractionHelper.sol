@@ -70,7 +70,7 @@ library InteractionHelper {
         }
         unchecked {
             return
-                string.concat(
+                string.concat( //example : POPT-V1 USDC LP on ETH/USDC 30bps
                     prefix,
                     " ",
                     isToken0 ? symbol0 : symbol1,

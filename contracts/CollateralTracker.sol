@@ -222,7 +222,12 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param token1 token 1 of the Uniswap pool.
     /// @param fee the fee of the Uniswap pool.
     /// @param panopticPool the address of the Panoptic Pool being created and linked to this Collateral Tracker.
-    //note So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ? 
+
+    //note @Paul So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ?
+    //audit-ok @Paul 2 of them Actually
+    //audit-ok @Paul Being called by PanotpicFactory when contract deployement
+    //note @Paul So a CollateralTracker Contract is deployed for each token of each Panoptic Pool ?
+    //audit @Mody front running? a clone of panoptic pool can be deployed and passed here
     function startToken(
         bool underlyingIsToken0,
         address token0,
@@ -327,6 +332,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// Requirements:
     /// - the caller must have a balance of at least 'amount'.
     /// - the msg.sender must not have any position on the panoptic pool
+    //audit-info Depends on s_poanopticPool, if it can be manipulated form a different part in the system then the user can become under collateralized
     function transfer(
         address recipient,
         uint256 amount
@@ -419,6 +425,10 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         unchecked {
             shares = Math.mulDiv(
                 //audit Weird To subbstact Decimals and Commision fees
+                //note COMMISSION_FEE is set to "10" in tests
+                //note DECIMALS is motly like to be 18. Other
+                //audit If DECIMALS < COMMISSION_FEE it will revert.
+                //audit If DECIMALS == COMMISSION_FEE it will return 0.
                 //note i don't think it's weird. see if we mul assets*commission_fee it will give us commission charge
                 //     but if we want to get no. of assets after taking out charges we need to do this assets*(100%-commission%)
                 //     same apply to why mul totalAsset*Decimal because we have mul it with assets so we need to devide it
@@ -446,7 +456,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
 
         // transfer assets (underlying token funds) from the user/the LP to the PanopticPool
         // in return for the shares to be minted
-        //todo @Paul ask about the audit-info tag from safTransferFrom()
+        //todo ask @Paul about the audit-info tag from safTransferFrom()
         SafeTransferLib.safeTransferFrom(
             s_underlyingToken,
             msg.sender,
@@ -496,6 +506,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         }
     }
 
+    //note What's the diff with the deposit function ?
     /// @notice Deposit required amount of assets to receive specified amount of shares.
     /// There is a maximum asset deposit limit of (2 ** 104) - 1.
     /// An MEV tax is levied, which is equal to a single payment of the commissionRate BEFORE adding the funds.
@@ -683,7 +694,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param positionBalance The balance in `account` of the position to be exercised
     /// @param longAmounts The amount of longs in the position.
     /// @return exerciseFees The fees for exercising the option position.
-    //audit-info Crutial method imo
+    //audit-info @paul Crutial method imo
     function exerciseCost(
         int24 currentTick,
         int24 oracleTick,
@@ -1038,6 +1049,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param shortAmount The amount of shorts.
     /// @param swappedAmount The amount of tokens swapped during creation of the option position (non-zero for options minted ITM).
     /// @return utilization The utilization of the Panoptic Pool.
+    //checked  @Mody
     function takeCommissionAddData(
         address optionOwner,
         int128 longAmount,
@@ -1140,6 +1152,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param shortAmount The amount of short options held.
     /// @param swappedAmount The (potential) amount swapped during any ITM option creations.
     /// @return exchangedAmount The amount of funds to be exchanged for minting an option (includes commission, swapFee, and intrinsic value).
+    //checked  @Mody
     function _getExchangedAmount(
         int128 longAmount,
         int128 shortAmount,
@@ -1203,6 +1216,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param premiumAllPositions the premium collected thus far across all positions.
     /// @return tokenData information collected for the tokens about the health of the account.
     /// The collateral balance of the user is in the right slot and the threshold for margin call is in the left slot.
+    //audit @paul Up the the Caller to decide if the user Collateral is enought or not
     function _getAccountMargin(
         address user,
         int24 atTick,
@@ -1242,8 +1256,13 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @notice Get the total required amount of collateral tokens of a user/account across all active positions to stay above the margin requirement.
     /// @dev Returns the token amounts required for the entire account with active positions in 'positionIdList' (list of tokenIds).
     /// @param atTick Tick to convert values at. This can be the current tick or the Uniswap pool TWAP tick.
+
+    //audit-info @paul It's a dynamic array. Each new element is another array of two elements.
+    // Example [[1, 2], [3, 4]]
     /// @param positionBalanceArray The list of all historical positions held by the 'optionOwner', stored as [[tokenId, balance/poolUtilizationAtMint], ...].
     /// @return tokenRequired The amount of tokens required to stay above the margin threshold for all active positions of user.
+
+    //audit-info @paul Get the Collateral Requirement for Open Positions
     function _getTotalRequiredCollateral(
         int24 atTick,
         uint256[2][] memory positionBalanceArray
@@ -1254,6 +1273,9 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         uint256 totalIterations = positionBalanceArray.length;
         for (uint256 i = 0; i < totalIterations; ) {
             // read the ith tokenId from the account
+
+            //audit-info @paul The i element looks like this : [tokenId  , poolUtilization + positionSize]
+            //                                                 [1 element, uint128         + uint128     ]
             TokenId tokenId = TokenId.wrap(positionBalanceArray[i][0]);
 
             // read the position size and the pool utilization at mint
@@ -1322,6 +1344,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     /// @param atTick Tick to convert values at. This can be the current tick or the Uniswap pool TWAP tick.
     /// @param poolUtilization The pool utilization: how much funds are in the Panoptic pool versus the AMM pool.
     /// @return required The required amount collateral needed for this leg 'index'.
+
+    //audit-info @paul What's a Risk Partner
     function _getRequiredCollateralSingleLeg(
         TokenId tokenId,
         uint256 index,
@@ -1535,7 +1559,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
         } else if (isLong == 1) {
             // if options is long, use buy collateral ratio
             // compute the buy collateral ratio, which depends on the pool utilization
-            uint256 buyCollateral = _buyCollateralRatio(uint256(utilization));
+            uint256 buyCollateral = _sellCollateralRatio(uint256(utilization));
 
             // compute required as amount*collateralRatio
             // can use unsafe because denominator is always nonzero
