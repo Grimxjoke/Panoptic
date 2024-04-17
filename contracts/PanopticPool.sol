@@ -300,13 +300,10 @@ contract PanopticPool is ERC1155Holder, Multicall {
     /// @param collateralTracker1 Interface for collateral token1.
 
     //audit-info Is is possible to DOS many pair by provinding random pool address ? 
-<<<<<<< HEAD
-=======
->>>>>>> refs/remotes/origin/main
-=======
     //audit front running, someone can provide a uniswpe like pool address and manipulate the twap and other integrations, unless it is meant to be permissionless and anyone can launch a pool
     // the protocol should have the uniswap factory address provided and validate that the provided pool address is indeed a uniswap one
->>>>>>> refs/remotes/origin/main
+    //audit-ok @paul Safe, being called upon the same Tx when contract creation in PanopticFactory::deployNewPool
+    //audit-ok @paul Once it's being called, it's Initialized then can't call it anymore.
     function startPool(
         IUniswapV3Pool _univ3pool,
         address token0,

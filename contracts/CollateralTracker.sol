@@ -382,6 +382,7 @@ contract CollateralTracker is ERC20Minimal, Multicall {
     //audit-info then where does collected fees are calculated
     /// @dev - EXCLUDING any donations that have been made to the pool
     //audit-info how can we make donations and where does donations are calculated
+    //audit-info @paul Donation is just sending some asset directly to the contract without calling any function
     /// @return totalManagedAssets The total amount of assets managed.
     //audit-ok @ayush
     function totalAssets() public view returns (uint256 totalManagedAssets) {
@@ -1709,6 +1710,8 @@ contract CollateralTracker is ERC20Minimal, Multicall {
                 (uint128(uint64(-int64(poolUtilization1 == 0 ? 1 : poolUtilization1))) << 64);
 
             return
+            //audit Pretty sure it's the wrong function call here. 
+            //audit It should called the "_getRequiredCollateralSingleLegPartner" Instead 
                 strangleRequired = _getRequiredCollateralSingleLegNoPartner(
                     tokenId,
                     index,
