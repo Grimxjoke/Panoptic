@@ -392,17 +392,18 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
         // Return the unpacked data: balanceOf(user, tokenId) and packed pool utilizations at the time of minting
         // turn LeftRightUnsigned back to uint128
+        //audit-info Uint256 is divide in 4 block: [uint64 | uint64 | uint64 | uin64]
+        //audit-info balance is taking the 128 bits on the right side so [uint64 | uint64 | Balance(1) | Balance(2)]
         balance = balanceData.rightSlot();
 
         // pool utilizations are packed into a single uint128
-        //audit-info Uint256 is divide in 4 block: [uint64 | uint64 | uint64 | uin64]
-        //audit-info balance is taking the 128 bits on the left side so [uint64 | uint64 | Balance(part1) | Balance(part2)]
 
         // the 64 least significant bits are the utilization of token0, so we can simply cast to uint64 to extract it
         // (cutting off the 64 most significant bits)
-        poolUtilization0 = uint64(balanceData.leftSlot());
         //audit-info Here poolUtilization0 is taking the second slot(uin64) from the first uin128 slot
         //audit-info So something like this -> [uint64 | poolUtilization0| uint64 | uin64]
+        poolUtilization0 = uint64(balanceData.leftSlot());
+
 
         // the 64 most significant bits are the utilization of token1, so we can shift the number to the right by 64 to extract it
         // (shifting away the 64 least significant bits)
@@ -413,6 +414,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         //audit-issue There's a collision with "poolUtilization1" AND the 64most Significant bits from "balance"
 
         poolUtilization1 = uint64(balanceData.leftSlot() >> 64);
+
     }
 
     /// @notice Compute the total amount of premium accumulated for a list of positions.
