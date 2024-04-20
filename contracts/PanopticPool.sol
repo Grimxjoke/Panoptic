@@ -395,14 +395,23 @@ contract PanopticPool is ERC1155Holder, Multicall {
         balance = balanceData.rightSlot();
 
         // pool utilizations are packed into a single uint128
+        //audit-info Uint256 is divide in 4 block: [uint64 | uint64 | uint64 | uin64]
+        //audit-info balance is taking the 128 bits on the left side so [uint64 | uint64 | Balance(part1) | Balance(part2)]
 
         // the 64 least significant bits are the utilization of token0, so we can simply cast to uint64 to extract it
         // (cutting off the 64 most significant bits)
         poolUtilization0 = uint64(balanceData.leftSlot());
+        //audit-info Here poolUtilization0 is taking the second slot(uin64) from the first uin128 slot
+        //audit-info So something like this -> [uint64 | poolUtilization0| uint64 | uin64]
 
         // the 64 most significant bits are the utilization of token1, so we can shift the number to the right by 64 to extract it
         // (shifting away the 64 least significant bits)
-        //audit-issue This is the First 64Bits from the balance variable.
+        //audit-info However , poolUtilization1 is in order: 
+            // 1) Is the 128 Most significant bits from the 256 "balanceData"
+            // 2) Right Shift it by 64 bits, So now It's the the 128 "in-the-middle" : [uint64 | balanceData(1)| balanceData(2) | uin64]
+            // 3) Truncate down the most significant bit from it by downcasting to uin64 :  [uint64 | uint64| poolUtilization1 | uin64]
+        //audit-issue There's a collision with "poolUtilization1" AND the 64most Significant bits from "balance"
+
         poolUtilization1 = uint64(balanceData.leftSlot() >> 64);
     }
 
