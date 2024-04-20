@@ -1415,6 +1415,8 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
     //audit what if the liquidator provides a sublist of the total positions open by a trader? tha hashes don't like they would match. 
     // If the liquidator must provide the full list of positions open by a trader then there is a DOS risk as the trader can open many positions with minimum investment. 
+    // this funciton is using s_positionsHash which seems to be using the total postitions. does that mean the liquidator MUST
+    // send a list of all positions for users? if so, we can use the DDOS method to prevent liquidation. 
     
     function _validatePositionList(
         address account,
