@@ -29,6 +29,7 @@ library CallbackLib {
     /// @param factory The address of the canonical Uniswap V3 factory
     /// @param features The features `sender` claims to contain (tokens and fee)
     //todo didn't get the usecase yet have to check it's usecase
+    //audit-ok @paul Use to vaidate the callback from Uniswap when Minting a Position or Process a Swap in SMPF.sol
     function validateCallback(
         address sender,
         IUniswapV3Factory factory,

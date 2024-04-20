@@ -212,7 +212,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
 
               owed_feesCollectedX128 = feeGrowthX128 * R * (1 + spread)                      (Eqn 1)
 
-        A very opinionated definition for the spread is: 
+        A very opinionated definition for the spread is: v = 1/4
               
               spread = ν*(liquidity removed from that strike)/(netLiquidity remaining at that strike)
                      = ν*R/N
@@ -405,7 +405,8 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
     /// @param amount1Owed The amount of token1 due to the pool for the minted liquidity
     /// @param data Contains the payer address and the pool features required to validate the callback
 
-    //audit Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
+    //audit @Mody Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
+    //audit-ok @Paul CallbackLib correctly validate that the msg.sender IS the right pool.
     function uniswapV3MintCallback(
         uint256 amount0Owed,
         uint256 amount1Owed,
@@ -442,6 +443,7 @@ contract SemiFungiblePositionManager is ERC1155, Multicall {
 
 
     //audit-info Is the call back validated correctly in the library? protocol must make sure the caller is uniswap factory or it can be DOS-ed
+    //audit-ok @Paul CallbackLib correctly validate that the msg.sender IS the right pool.
     function uniswapV3SwapCallback(
         int256 amount0Delta,
         int256 amount1Delta,

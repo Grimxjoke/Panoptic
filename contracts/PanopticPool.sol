@@ -391,6 +391,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         LeftRightUnsigned balanceData = s_positionBalance[user][tokenId];
 
         // Return the unpacked data: balanceOf(user, tokenId) and packed pool utilizations at the time of minting
+        // turn LeftRightUnsigned back to uint128
         balance = balanceData.rightSlot();
 
         // pool utilizations are packed into a single uint128
@@ -401,6 +402,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
         // the 64 most significant bits are the utilization of token1, so we can shift the number to the right by 64 to extract it
         // (shifting away the 64 least significant bits)
+        //audit-issue This is the First 64Bits from the balance variable.
         poolUtilization1 = uint64(balanceData.leftSlot() >> 64);
     }
 
