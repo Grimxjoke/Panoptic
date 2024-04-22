@@ -661,7 +661,6 @@ library PanopticMath {
     /// @return bonus0 Bonus amount for token0
     /// @return bonus1 Bonus amount for token1
     /// @return The LeftRight-packed protocol loss for both tokens, i.e., the delta between the user's balance and expended tokens
-    //audit-info Crutial method imo
     function getLiquidationBonus(
         LeftRightUnsigned tokenData0,
         LeftRightUnsigned tokenData1,

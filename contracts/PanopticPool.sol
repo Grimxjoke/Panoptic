@@ -392,7 +392,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
         // Return the unpacked data: balanceOf(user, tokenId) and packed pool utilizations at the time of minting
         // turn LeftRightUnsigned back to uint128
-        //audit-info Uint256 is divide in 4 block: [uint64 | uint64 | uint64 | uin64]
+        //audit-info Uint256 is divide in 4 block: [0x0 | uint64(1) | uint64(2) | uin64(3)]
         //audit-info balance is taking the 128 bits on the right side so [uint64 | uint64 | Balance(1) | Balance(2)]
         balance = balanceData.rightSlot();
 
@@ -401,7 +401,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         // the 64 least significant bits are the utilization of token0, so we can simply cast to uint64 to extract it
         // (cutting off the 64 most significant bits)
         //audit-info Here poolUtilization0 is taking the second slot(uin64) from the first uin128 slot
-        //audit-info So something like this -> [uint64 | poolUtilization0| uint64 | uin64]
+        //audit-info So something like this -> [uint64 | uint64 | uint64 | uin64]
         poolUtilization0 = uint64(balanceData.leftSlot());
 
 
@@ -412,7 +412,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
             // 2) Right Shift it by 64 bits, So now It's the the 128 "in-the-middle" : [uint64 | balanceData(1)| balanceData(2) | uin64]
             // 3) Truncate down the most significant bit from it by downcasting to uin64 :  [uint64 | uint64| poolUtilization1 | uin64]
         //audit-issue There's a collision with "poolUtilization1" AND the 64most Significant bits from "balance"
-
+        
         poolUtilization1 = uint64(balanceData.leftSlot() >> 64);
 
     }
@@ -855,6 +855,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         premiasByLeg = new LeftRightSigned[4][](positionIdList.length);
         for (uint256 i = 0; i < positionIdList.length; ) {
             LeftRightSigned paidAmounts;
+            //note burn an option position held by 'owner'.
             (paidAmounts, premiasByLeg[i]) = _burnOptions(
                 commitLongSettled,
                 positionIdList[i],
@@ -1079,6 +1080,7 @@ contract PanopticPool is ERC1155Holder, Multicall {
         _validatePositionList(liquidatee, positionIdList, 0);
 
         // Assert the account we are liquidating is actually insolvent
+        // getUniV3TWAP(): Compute the TWAP price from the last 600s = 10mins.
         int24 twapTick = getUniV3TWAP();
 
         LeftRightUnsigned tokenData0;
@@ -1092,6 +1094,9 @@ contract PanopticPool is ERC1155Holder, Multicall {
                 revert Errors.StaleTWAP();
 
             uint256[2][] memory positionBalanceArray = new uint256[2][](positionIdList.length);
+            //note _calculateAccumulatedPremia: Calculate the accumulated premia owed from the option buyer to the option seller.
+            //note premia: portfolioPremium The computed premia of the user's positions, where premia contains the accumulated premia for token0 in the right slot and for token1 in the left slot.
+            //note positionBalanceArray: balances A list of balances and pool utilization for each position, of the form [[tokenId0, balances0], [tokenId1, balances1], ...].
             (premia, positionBalanceArray) = _calculateAccumulatedPremia(
                 liquidatee,
                 positionIdList,
@@ -1099,6 +1104,9 @@ contract PanopticPool is ERC1155Holder, Multicall {
                 ONLY_AVAILABLE_PREMIUM,
                 currentTick
             );
+            
+            //description Get the token0 Collateral status/margin details of liquidatee
+            // It's up to the caller to confirm from the returned result that the account has enough collateral.
             tokenData0 = s_collateralToken0.getAccountMarginDetails(
                 liquidatee,
                 twapTick,
@@ -1106,6 +1114,8 @@ contract PanopticPool is ERC1155Holder, Multicall {
                 premia.rightSlot()
             );
 
+            //note Get the token1 Collateral status/margin details of liquidatee
+            // It's up to the caller to confirm from the returned result that the account has enough collateral.
             tokenData1 = s_collateralToken1.getAccountMarginDetails(
                 liquidatee,
                 twapTick,
@@ -1113,18 +1123,24 @@ contract PanopticPool is ERC1155Holder, Multicall {
                 premia.leftSlot()
             );
 
+            //note Get parameters related to the solvency state of the account associated with the incoming tokenData
+            //note balanceCross:   The current cross-collateral balance of the option positions.
+            //note thresholdCross: The cross-collateral threshold balance under which the account is insolvent.
             (uint256 balanceCross, uint256 thresholdCross) = _getSolvencyBalances(
                 tokenData0,
                 tokenData1,
                 Math.getSqrtRatioAtTick(twapTick)
             );
 
+            //note Not Liquidable -> Liquidatee has Enough Margin
             if (balanceCross >= thresholdCross) revert Errors.NotMarginCalled();
         }
 
         // Perform the specified delegation from `msg.sender` to `liquidatee`
         // Works like a transfer, so the liquidator must possess all the tokens they are delegating, resulting in no net supply change
         // If not enough tokens are delegated for the positions of `liquidatee` to be closed, the liquidation will fail
+        
+        //note Liquidator Sends Shares to the Liquidatee
         s_collateralToken0.delegate(msg.sender, liquidatee, delegations.rightSlot());
         s_collateralToken1.delegate(msg.sender, liquidatee, delegations.leftSlot());
 
@@ -1139,6 +1155,8 @@ contract PanopticPool is ERC1155Holder, Multicall {
             // Do not commit any settled long premium to storage - we will do this after we determine if any long premium must be revoked
             // This is to prevent any short positions the liquidatee has being settled with tokens that will later be revoked
             // Note: tick limits are not applied here since it is not the liquidator's position being liquidated
+            //note burn option during a liquidation from an account _owner.
+            //note netExchanged: The net exchanged value of the closed portfolio
             (netExchanged, premiasByLeg) = _burnAllOptionsFrom(
                 liquidatee,
                 Constants.MIN_V3POOL_TICK,
@@ -1151,6 +1169,11 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
             LeftRightSigned collateralRemaining;
             // compute bonus amounts using latest tick data
+
+            //note getLiquidationBonus: Check that the account is liquidatable, get the split of bonus0 and bonus1 amounts.
+            //note Leftright encoded word with balance of token0 in the right slot, and required balance in left slot
+            //note Leftright encoded word with balance of token0 in the right slot, and required balance in left slot
+            //note  Protocol loss for both tokens, i.e., the delta between the user's balance and expended tokens
             (liquidationBonus0, liquidationBonus1, collateralRemaining) = PanopticMath
                 .getLiquidationBonus(
                     tokenData0,
@@ -1170,11 +1193,16 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
             // if premium is haircut from a token that is not in protocol loss, some of the liquidation bonus will be converted into that token
             // reusing variables to save stack space; netExchanged = deltaBonus0, premia = deltaBonus1
+
             address _liquidatee = liquidatee;
             TokenId[] memory _positionIdList = positionIdList;
             int24 _finalTick = finalTick;
             int256 deltaBonus0;
             int256 deltaBonus1;
+
+            //note Premium paid by `liquidatee` on `positionIdList` over the protocol loss threshold during a liquidation.
+            //note The delta in bonus0 for the liquidator post-haircut
+            //note The delta in bonus1 for the liquidator post-haircut
             (deltaBonus0, deltaBonus1) = PanopticMath.haircutPremia(
                 _liquidatee,
                 _positionIdList,
@@ -1194,6 +1222,9 @@ contract PanopticPool is ERC1155Holder, Multicall {
 
         LeftRightUnsigned _delegations = delegations;
         // revoke the delegated amount plus the bonus amount.
+
+        //note Send shares from liquidatee to liquidator + liquidationBonus
+        //note If Liquiditee doens' have the extra liquidation Bonus -> Mint it to the Liquidator
         s_collateralToken0.revoke(
             msg.sender,
             liquidatee,
@@ -1206,15 +1237,21 @@ contract PanopticPool is ERC1155Holder, Multicall {
         );
 
         // check that the provided positionIdList matches the positions in memory
+        // Validates the solvency of `user` at the fast oracle tick.
+        // Falls back to the more conservative tick if the delta between the fast and slow oracle exceeds `MAX_SLOW_FAST_DELTA`.
         _validatePositionList(msg.sender, positionIdListLiquidator, 0);
 
-        if (
+        if (//note If User Liquidator Doesn't have enought Collateral to buy back the Liquidatee position
+
+            //note check whether an account is solvent at a given `atTick` 
+            //note with a collateral requirement of `buffer`/10_000 
+            //note multiplied by the requirement of `positionIdList`.
             !_checkSolvencyAtTick(
                 msg.sender,
                 positionIdListLiquidator,
                 finalTick,
                 finalTick,
-                BP_DECREASE_BUFFER
+                BP_DECREASE_BUFFER //13333
             )
         ) revert Errors.NotEnoughCollateral();
 
@@ -1417,17 +1454,16 @@ contract PanopticPool is ERC1155Holder, Multicall {
                  POSITIONS HASH GENERATION & VALIDATION
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Makes sure that the positions in the incoming user's list match the existing active option positions.
-    /// @dev Check whether the list of positionId 1) has duplicates and 2) matches the length stored in the positionsHash.
-    /// @param account The owner of the incoming list of positions.
-    /// @param positionIdList The existing list of active options for the owner.
-    /// @param offset Changes depending on whether this is a new mint or a liquidation (=1 if new mint, 0 if liquidation).
 
     //audit what if the liquidator provides a sublist of the total positions open by a trader? tha hashes don't like they would match. 
     // If the liquidator must provide the full list of positions open by a trader then there is a DOS risk as the trader can open many positions with minimum investment. 
     // this funciton is using s_positionsHash which seems to be using the total postitions. does that mean the liquidator MUST
     // send a list of all positions for users? if so, we can use the DDOS method to prevent liquidation. 
-    
+    /// @notice Makes sure that the positions in the incoming user's list match the existing active option positions.
+    /// @dev Check whether the list of positionId 1) has duplicates and 2) matches the length stored in the positionsHash.
+    /// @param account The owner of the incoming list of positions.
+    /// @param positionIdList The existing list of active options for the owner.
+    /// @param offset Changes depending on whether this is a new mint or a liquidation (=1 if new mint, 0 if liquidation).
     function _validatePositionList(
         address account,
         TokenId[] calldata positionIdList,

@@ -135,7 +135,9 @@ library Math {
     /// @param tick Value of the tick for which sqrt(1.0001^tick) is calculated
     /// @return A Q64.96 number representing the sqrt price at the provided tick
     //note calculates the square root of a specific price ratio in a Uniswap v3 constant product pool, given a tick value.
+    //audit-ok Very similar to the original Uniswap built-in function
     function getSqrtRatioAtTick(int24 tick) internal pure returns (uint160) {
+        //audit There is a unhecked Block when the Uniswap built-in function deosn't have one: https://github.com/Uniswap/v3-core/blob/main/contracts/libraries/TickMath.sol
         unchecked {
             uint256 absTick = tick < 0 ? uint256(-int256(tick)) : uint256(int256(tick));
             if (absTick > uint256(int256(Constants.MAX_V3POOL_TICK))) revert Errors.InvalidTick();
